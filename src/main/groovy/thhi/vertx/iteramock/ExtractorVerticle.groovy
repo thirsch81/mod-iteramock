@@ -1,4 +1,4 @@
-package de.thhi.soapmock
+package thhi.vertx.iteramock
 
 import groovy.text.SimpleTemplateEngine
 

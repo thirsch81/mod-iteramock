@@ -1,4 +1,4 @@
-package de.thhi.soapmock
+package thhi.vertx.iteramock
 
 import org.vertx.groovy.core.http.HttpServer
 import org.vertx.groovy.core.http.RouteMatcher

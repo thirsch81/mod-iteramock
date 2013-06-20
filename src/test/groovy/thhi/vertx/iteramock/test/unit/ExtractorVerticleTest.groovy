@@ -1,8 +1,8 @@
-package de.thhi.soapmock.test.unit;
+package thhi.vertx.iteramock.test.unit;
 
 import static org.junit.Assert.*;
 
-import de.thhi.soapmock.ExtractorVerticle
+import thhi.vertx.iteramock.ExtractorVerticle
 import org.junit.Test;
 import org.vertx.groovy.core.Vertx
 

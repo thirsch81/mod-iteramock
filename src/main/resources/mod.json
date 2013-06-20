@@ -1,9 +1,9 @@
 {
-	"main":"groovy:de.thhi.soapmock.StarterVerticle",
+	"main":"groovy:thhi.vertx.iteramock.StarterVerticle",
 	
 	// Mandatory fields
 	"description":"Simple Mock Service",
-	"licenses": [""Creative Commons Attribution 3.0 Unported License""],
+	"licenses": ["Creative Commons Attribution 3.0 Unported License"],
 	"author": "Thomas Hirsch",
 	
 	// Optional fields

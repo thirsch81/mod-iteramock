@@ -3,9 +3,9 @@ import static org.vertx.testtools.VertxAssert.*
 import org.vertx.groovy.core.http.HttpClientResponse
 import org.vertx.groovy.testtools.VertxTests
 
-import de.thhi.soapmock.MockServerVerticle
-import de.thhi.soapmock.StarterVerticle
-import de.thhi.soapmock.ExtractorVerticle
+import thhi.vertx.iteramock.ExtractorVerticle
+import thhi.vertx.iteramock.MockServerVerticle
+import thhi.vertx.iteramock.StarterVerticle
 
 // The test methods must being with "test"
 
