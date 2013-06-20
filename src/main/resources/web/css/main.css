@@ -1,0 +1,33 @@
+textarea.script-input {
+	resize: vertical;
+	font-family: monospace;
+}
+
+.alert-container {
+	position: absolute;
+}
+
+.alert-block {
+	position: relative;
+}
+
+.connection-status {
+	line-height: 40px;
+	height: 40px;
+}
+
+.input-append .btn {
+	height: 30px;
+}
+
+.v10 {
+	height: 10px;
+}
+
+.v50 {
+	height: 50px;
+}
+
+.v100 {
+	height: 100px;
+}
