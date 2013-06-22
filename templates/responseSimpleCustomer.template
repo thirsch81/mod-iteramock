@@ -1,0 +1,10 @@
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header/>
+   <SOAP-ENV:Body>
+      <cu-resp:IdentifySimpleCustomerResponse xmlns:co="http://b2c.otto.de/schema/common" xmlns:co-req="http://b2c.otto.de/schema/common/request" xmlns:co-resp="http://b2c.otto.de/schema/common/response" xmlns:cu="http://b2c.otto.de/schema/customer" xmlns:cu-req="http://b2c.otto.de/schema/customer/request" xmlns:cu-resp="http://b2c.otto.de/schema/customer/response" xmlns:od-req="http://b2c.otto.de/schema/order/request" xmlns:od-resp="http://b2c.otto.de/schema/order/response">
+         <cu-resp:simpleAccountData>
+            <co:accountNumber>${accountNumber}</co:accountNumber>
+         </cu-resp:simpleAccountData>
+      </cu-resp:IdentifySimpleCustomerResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

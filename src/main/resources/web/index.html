@@ -130,7 +130,9 @@
 							<div id="template-container" class="tab-content">
 								<div data-ng-repeat="template in templates" class="tab-pane" id="{{template.name}}">
 									<form name="submit{{template.name}}">
-										<textarea data-ng-model="template.template" data-ng-required="true" class="script-input span9" rows="10"></textarea>
+										<textarea data-ng-model="template.template" data-ng-required="true" class="script-input span9" rows="20"></textarea>
+										<div class="v10"></div>
+										<textarea data-ng-model="template.extractScript" data-ng-required="true" class="script-input span9" rows="10"></textarea>
 										<div class="row">
 											<div class="offset4">
 												<button data-ng-click="submit()" data-ng-disabled="!submit{{template.name}}.$valid"

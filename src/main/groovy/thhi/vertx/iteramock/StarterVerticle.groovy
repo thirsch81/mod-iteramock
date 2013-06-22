@@ -6,7 +6,7 @@ public class StarterVerticle extends Verticle {
 
 	def start() {
 
-		container.deployModule("thhi.vertx~renderer~0.5.0") { result ->
+		container.deployModule("thhi.vertx~renderer~0.6.0") { result ->
 			container.logger.info("StarterVerticle: deployed Renderer ${result.result()}")
 		}
 		container.deployWorkerVerticle("groovy:" + ExtractorVerticle.class.name) { result ->
