@@ -25,12 +25,8 @@ function TemplateCtrl($scope, EventBus) {
 		}, updateTemplates);
 	}
 
-	$scope.deleteTemplate = function() {
-		angular.forEach($scope.templates, function(value, key) {
-			if (value.name == activeTemplate()) {
-				$scope.templates.splice(key, 1);
-			};
-		});
+	$scope.deleteTemplate = function(index) {
+		$scope.templates.splice(index, 1);
 	}
 
 	$scope.submit = function() {

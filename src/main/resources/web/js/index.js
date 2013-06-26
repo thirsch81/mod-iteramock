@@ -1,7 +1,6 @@
-var app = angular.module("iteraMock", []);
+var app = angular.module("iteraMock", ["ui"]);
 app.factory("EventBus", function() {
 	return new vertx.EventBus("http://localhost:8080/eventbus");
-
 });
 
 function MainCtrl($scope, EventBus) {

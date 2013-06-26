@@ -1,5 +1,6 @@
 {
 	"main":"groovy:thhi.vertx.iteramock.StarterVerticle",
+	"auto-redeploy": true,
 	
 	// Mandatory fields
 	"description":"Simple Mock Service",

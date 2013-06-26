@@ -5,16 +5,26 @@
 <title>iteraMock</title>
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.css">
+<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/eclipse.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/blackboard.css">
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.3.0/ui-bootstrap-tpls.min.js"></script>
+<script src="http://codemirror.net/lib/codemirror.js"></script>
+<script src="http://codemirror.net/addon/edit/matchbrackets.js"></script>
+<script src="http://codemirror.net/mode/htmlmixed/htmlmixed.js"></script>
+<script src="http://codemirror.net/mode/xml/xml.js"></script>
+<script src="http://codemirror.net/mode/groovy/groovy.js"></script>
+<script src="http://codemirror.net/mode/clike/clike.js"></script>
+<script src="http:///cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
 <script src="js/vertxbus.js"></script>
 </head>
-<body data-spy="scroll">
+<body data-ng-app="iteraMock">
 	<div data-ng-controller="MainCtrl" class="container">
 		<div class="page-header row span8">
 			<h1>iteraMock</h1>
@@ -76,7 +86,7 @@
 						</div>
 						<div class="v10"></div>
 						<form name="dispatchRule">
-							<textarea name="script" data-ng-model="script" data-ng-required="true" class="script-input span8" rows="10"></textarea>
+							<textarea id="dispatch-rule" ui-codemirror="dispatchEditorOptions" data-ng-model="script" data-ng-required="true" class="script-input span8"></textarea>
 							<div class="row">
 								<div class="offset2">
 									<button data-ng-click="submit()" data-ng-disabled="!dispatchRule.$valid" class="btn btn-inverse span3">Submit
@@ -112,7 +122,7 @@
 								<div class="controls">
 									<div class="input-append">
 										<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^\w{3,16}$/" class="input-large"
-											placeholder="enter template name" type="text">
+											placeholder="Template name" type="text">
 										<button data-ng-click="add()" data-ng-disabled="!addTemplate.$valid" class="btn add-on">Add template</button>
 									</div>
 								</div>
@@ -137,7 +147,7 @@
 											<div class="offset4">
 												<button data-ng-click="submit()" data-ng-disabled="!submit{{template.name}}.$valid"
 													class="btn btn-inverse span2">Submit template</button>
-												<button data-ng-click="deleteTemplate()" class="btn btn-danger span2">Delete template</button>
+												<button data-ng-click="deleteTemplate($index)" class="btn btn-danger span2">Delete template</button>
 											</div>
 										</div>
 									</form>

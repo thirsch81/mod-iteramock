@@ -1,7 +1,13 @@
 function DispatchCtrl($scope, EventBus) {
 
-	$scope.script = "";
-
+	$scope.dispatchEditorOptions = {
+		theme : "blackboard",
+		mode : "text/x-groovy",
+		lineNumbers : true,
+		matchBrackets : true,
+		value: "// Enter script"
+	}
+	
 	$scope.submit = function() {
 		EventBus.send("extractor.dispatchRule", {
 			action : "submit",
@@ -16,7 +22,6 @@ function DispatchCtrl($scope, EventBus) {
 	};
 
 	function updateScript(reply) {
-		showMessage(reply);
 		$scope.script = reply.script;
 		$scope.$digest();
 	};

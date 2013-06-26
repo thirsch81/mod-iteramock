@@ -3,6 +3,20 @@ textarea.script-input {
 	font-family: monospace;
 }
 
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.CodeMirror-lines {
+	padding: 10px 0;
+}
+
 .alert-container {
 	position: absolute;
 }
