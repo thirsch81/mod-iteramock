@@ -1,10 +1,25 @@
 var app = angular.module("iteraMock", []);
+
 app.factory("EventBus", function() {
 	return new vertx.EventBus("http://localhost:8080/eventbus");
-
 });
 
-function MainCtrl($scope, EventBus) {
+app.config(['$routeProvider', function($routeProvider) {
+	$routeProvider.when("/general", {
+		templateUrl : "general.html",
+		controller : GeneralCtrl
+	}).when("/dispatch", {
+		templateUrl : "dispatch.html",
+		controller : DispatchCtrl
+	}).when("/templates", {
+		templateUrl : "templates.html",
+		controller : TemplateCtrl
+	}).otherwise({
+		redirectTo : "/general"
+	});
+}]);
+
+function Main($scope, $location, EventBus) {
 
 	$scope.status = "waiting";
 	$scope.statusClass = "text-warning";
@@ -20,6 +35,15 @@ function MainCtrl($scope, EventBus) {
 		$scope.statusClass = "text-error";
 		$scope.$digest();
 	}
+
+	$scope.isActive = function(route) {
+		var regex = RegExp(route);
+		return (regex.test($location.path()));
+	}
+}
+
+function GeneralCtrl($scope, EventBus) {
+
 }
 
 function showMessage(reply) {

@@ -1,0 +1,45 @@
+<div id="dispatch">
+	<div class="row">
+		<div class="well span8">
+			<strong>Dispatch rule</strong>
+			<div class="v10"></div>
+			<div>Enter a Groovy script.</div>
+			<div>
+				The incoming request content is bound to
+				<code>
+					<a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html">groovy.lang.String </a>request
+				</code>
+				.
+			</div>
+			<div>
+				The root node of the XML document is bound to
+				<code>
+					<a href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html">groovy.util.slurpersupport.GPathResult
+					</a> root
+				</code>
+				.
+			</div>
+			<div>
+				The script must set a string value for
+				<code>template</code>
+				.
+			</div>
+			<div class="v50"></div>
+			<div class="row">
+				<div class="offset2">
+					<button data-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
+				</div>
+			</div>
+			<div class="v10"></div>
+			<form name="dispatchRule">
+				<textarea name="script" data-ng-model="script" data-ng-required="true" class="script-input span8" rows="10"></textarea>
+				<div class="row">
+					<div class="offset2">
+						<button data-ng-click="submit()" data-ng-disabled="!dispatchRule.$valid" class="btn btn-inverse span3">Submit
+							script</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

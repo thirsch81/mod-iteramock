@@ -1,0 +1,52 @@
+<div id="templates">
+	<div class="row">
+		<div class="well span9">
+			<strong>Response template settings</strong>
+			<div class="v10"></div>
+			<div>Each template has a name and an extract script.</div>
+			<div>
+				When responding to a request, a template is chosen from the
+				<code>template</code>
+				value of the dispatch script.
+			</div>
+			<div class="v50"></div>
+			<form name="addTemplate">
+				<div class="control-group">
+					<div class="controls">
+						<div class="input-append">
+							<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^\w{3,16}$/" class="input-large"
+								placeholder="enter template name" type="text">
+							<button data-ng-click="add()" data-ng-disabled="!addTemplate.$valid" class="btn add-on">Add template</button>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="v10"></div>
+			<div class="row">
+				<button data-ng-click="fetchTemplates()" class="btn btn-success span3">Fetch templates</button>
+			</div>
+			<div class="v10"></div>
+			<div class="tabbable tabs-left">
+				<ul class="nav nav-tabs" id="template-tabs">
+					<li data-ng-repeat="template in templates"><a href="#{{template.name}}" x-ng-click="setActive(template.name)">{{template.name}}</a></li>
+				</ul>
+				<div id="template-container" class="tab-content">
+					<div data-ng-repeat="template in templates" class="tab-pane" id="{{template.name}}">
+						<form name="submit{{template.name}}">
+							<textarea data-ng-model="template.template" data-ng-required="true" class="script-input span9" rows="20"></textarea>
+							<div class="v10"></div>
+							<textarea data-ng-model="template.extractScript" data-ng-required="true" class="script-input span9" rows="10"></textarea>
+							<div class="row">
+								<div class="offset4">
+									<button data-ng-click="submit()" data-ng-disabled="!submit{{template.name}}.$valid"
+										class="btn btn-inverse span2">Submit template</button>
+									<button data-ng-click="deleteTemplate()" class="btn btn-danger span2">Delete template</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

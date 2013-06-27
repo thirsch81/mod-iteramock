@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-ng-app="iteraMock">
+<html x-ng-app="iteraMock">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>iteraMock</title>
@@ -7,155 +7,39 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.3.0/ui-bootstrap-tpls.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
 <script src="js/vertxbus.js"></script>
 </head>
-<body data-spy="scroll">
-	<div data-ng-controller="MainCtrl" class="container">
+<body>
+	<div x-ng-controller="Main" class="container">
 		<div class="page-header row span8">
 			<h1>iteraMock</h1>
 		</div>
 		<div class="navbar navbar-inverse span8 row">
 			<div class="navbar-inner">
 				<ul id="menu" class="nav">
-					<li><a href="#general" data-toggle="tab">General</a></li>
-					<li><a href="#dispatch" data-toggle="tab">Dispatch</a></li>
-					<li><a href="#extraction" data-toggle="tab">Extraction</a></li>
-					<li><a href="#templates" data-toggle="tab">Templates</a></li>
+					<li x-ng-class="{active: isActive('general')}"><a href="#/general">General</a></li>
+					<li x-ng-class="{active: isActive('dispatch')}"><a href="#/dispatch">Dispatch</a></li>
+					<li x-ng-class="{active: isActive('templates')}"><a href="#/templates">Templates</a></li>
 				</ul>
 				<div class="connection-status pull-right {{statusClass}}">{{status}}</div>
 			</div>
 		</div>
 	</div>
 	<div class="container">
-		<div class="tab-content row span12">
-			<div class="tab-pane active" id="general">
-				<div class="row">
-					<div class="well span8">
-						<strong>Mock Server settings</strong>
-						<div class="v10"></div>
-						<div></div>
-					</div>
-				</div>
-			</div>
-			<div data-ng-controller="DispatchCtrl" class="tab-pane" id="dispatch">
-				<div class="row">
-					<div class="well span8">
-						<strong>Dispatch rule</strong>
-						<div class="v10"></div>
-						<div>Enter a Groovy script.</div>
-						<div>
-							The incoming request content is bound to
-							<code>
-								<a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html">groovy.lang.String </a>request
-							</code>
-							.
-						</div>
-						<div>
-							The root node of the XML document is bound to
-							<code>
-								<a href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html">groovy.util.slurpersupport.GPathResult
-								</a> root
-							</code>
-							.
-						</div>
-						<div>
-							The script must set a string value for
-							<code>template</code>
-							.
-						</div>
-						<div class="v10"></div>
-						<div class="row">
-							<div class="offset2">
-								<button data-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
-							</div>
-						</div>
-						<div class="v10"></div>
-						<form name="dispatchRule">
-							<textarea name="script" data-ng-model="script" data-ng-required="true" class="script-input span8" rows="10"></textarea>
-							<div class="row">
-								<div class="offset2">
-									<button data-ng-click="submit()" data-ng-disabled="!dispatchRule.$valid" class="btn btn-inverse span3">Submit
-										script</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane" id="extraction">
-				<div class="row">
-					<div class="well span8">
-						<strong>Request extraction settings</strong>
-						<div class="v10"></div>
-					</div>
-				</div>
-			</div>
-			<div data-ng-controller="TemplateCtrl" class="tab-pane" id="templates">
-				<div class="row">
-					<div class="well span9">
-						<strong>Response template settings</strong>
-						<div class="v10"></div>
-						<div>Each template has a name and an extract script.</div>
-						<div>
-							When responding to a request, a template is chosen from the
-							<code>template</code>
-							value of the dispatch script.
-						</div>
-						<div class="v10"></div>
-						<form name="addTemplate">
-							<div class="control-group">
-								<div class="controls">
-									<div class="input-append">
-										<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^\w{3,16}$/" class="input-large"
-											placeholder="enter template name" type="text">
-										<button data-ng-click="add()" data-ng-disabled="!addTemplate.$valid" class="btn add-on">Add template</button>
-									</div>
-								</div>
-							</div>
-						</form>
-						<div class="v10"></div>
-						<div class="row">
-							<button data-ng-click="fetchTemplates()" class="btn btn-success span3">Fetch templates</button>
-						</div>
-						<div class="v10"></div>
-						<div class="tabbable">
-							<ul class="nav nav-tabs" id="template-tabs">
-								<li data-ng-repeat="template in templates"><a href="#{{template.name}}" data-toggle="tab">{{template.name}}</a></li>
-							</ul>
-							<div id="template-container" class="tab-content">
-								<div data-ng-repeat="template in templates" class="tab-pane" id="{{template.name}}">
-									<form name="submit{{template.name}}">
-										<textarea data-ng-model="template.template" data-ng-required="true" class="script-input span9" rows="20"></textarea>
-										<div class="v10"></div>
-										<textarea data-ng-model="template.extractScript" data-ng-required="true" class="script-input span9" rows="10"></textarea>
-										<div class="row">
-											<div class="offset4">
-												<button data-ng-click="submit()" data-ng-disabled="!submit{{template.name}}.$valid"
-													class="btn btn-inverse span2">Submit template</button>
-												<button data-ng-click="deleteTemplate()" class="btn btn-danger span2">Delete template</button>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+		<div class="row span12">
+			<div x-ng-view></div>
 		</div>
 	</div>
 	<div class="container">
-		<div class="row offset1">
+		<div class="row span12">
 			<div class="alert-container"></div>
 		</div>
 	</div>
-	<script src="js/index.js"></script>
-	<script src="js/dispatch-rule.js"></script>
+	<script src="js/main.js"></script>
+	<script src="js/dispatch.js"></script>
 	<script src="js/templates.js"></script>
 </body>
 </html>
