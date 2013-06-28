@@ -1,7 +1,4 @@
-function TemplateCtrl($scope, EventBus) {
-
-	$scope.templates = [];
-	$scope.templateName = "";
+function TemplateCtrl($scope, $routeParams, eventBus) {
 
 	$scope.add = function() {
 		var template = {
@@ -20,25 +17,33 @@ function TemplateCtrl($scope, EventBus) {
 	}
 
 	$scope.fetchTemplates = function() {
-		EventBus.send("renderer.templates", {
+		eventBus.send("renderer.templates", {
 			action : "fetch"
 		}, updateTemplates);
 	}
 
-	$scope.deleteTemplate = function() {
-		angular.forEach($scope.templates, function(value, key) {
-			if (value.name == activeTemplate()) {
-				$scope.templates.splice(key, 1);
-			};
-		});
+	$scope.deleteTemplate = function(index) {
+		$scope.templates.splice(index, 1);
 	}
 
 	$scope.submit = function() {
-		EventBus.send("renderer.templates", {
+		eventBus.send("renderer.templates", {
 			"action" : "submit",
 			"name" : activeTemplate(),
 			"template" : activeTemplateContent()
-		}, showMessage);
+		});
+	}
+
+	function getTemplate(name) {
+		console.log(JSON.stringify(name));
+		var result = {};
+		angular.forEach($scope.templates, function(template, index) {
+			if (template.name == name) {
+				result = template;
+			}
+		});
+		console.log(JSON.stringify(result));
+		return result;
 	}
 
 	function isDuplicate(name) {
@@ -54,7 +59,6 @@ function TemplateCtrl($scope, EventBus) {
 	}
 
 	function updateTemplates(reply) {
-		showMessage(reply);
 		if (reply.status == "ok") {
 			$scope.templates = [];
 			angular.forEach(reply.templates, function(template, index) {
@@ -66,4 +70,16 @@ function TemplateCtrl($scope, EventBus) {
 			$scope.$digest();
 		};
 	}
+
+	$scope.templates = [];
+	$scope.templateName = "";
+
+	$scope.fetchTemplates();
+	setTimeout(function() {
+		console.log(JSON.stringify($scope.templates));
+		$scope.template = getTemplate($routeParams.name).template;
+	}, 1000);
+	
+	console.log(JSON.stringify($scope.template));
+
 }

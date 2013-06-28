@@ -27,15 +27,15 @@
 			<div class="v50"></div>
 			<div class="row">
 				<div class="offset2">
-					<button data-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
+					<button x-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
 				</div>
 			</div>
 			<div class="v10"></div>
 			<form name="dispatchRule">
-				<textarea name="script" data-ng-model="script" data-ng-required="true" class="script-input span8" rows="10"></textarea>
+				<textarea name="script" x-ng-model="script" x-ng-required="true" class="script-input span8" rows="10"></textarea>
 				<div class="row">
 					<div class="offset2">
-						<button data-ng-click="submit()" data-ng-disabled="!dispatchRule.$valid" class="btn btn-inverse span3">Submit
+						<button x-ng-click="submit()" x-ng-disabled="!dispatchRule.$valid" class="btn btn-inverse span3">Submit
 							script</button>
 					</div>
 				</div>

@@ -1,23 +1,25 @@
-function DispatchCtrl($scope, EventBus) {
+function DispatchCtrl($rootScope, $scope, eventBus) {
 
 	$scope.script = "";
 
 	$scope.submit = function() {
-		EventBus.send("extractor.dispatchRule", {
+		eventBus.send("extractor.dispatchRule", {
 			action : "submit",
 			script : $scope.script
-		}, showMessage);
+		});
 	};
 
 	$scope.fetch = function() {
-		EventBus.send("extractor.dispatchRule", {
+		eventBus.send("extractor.dispatchRule", {
 			action : "fetch"
-		}, updateScript);
+		}).then(updateScript);
 	};
 
 	function updateScript(reply) {
-		showMessage(reply);
 		$scope.script = reply.script;
-		$scope.$digest();
 	};
+
+	eventBus.open.then(function() {
+		$scope.fetch();
+	});
 };

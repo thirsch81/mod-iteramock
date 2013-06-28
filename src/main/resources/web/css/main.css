@@ -3,14 +3,6 @@ textarea.script-input {
 	font-family: monospace;
 }
 
-.alert-container {
-	position: absolute;
-}
-
-.alert-block {
-	position: relative;
-}
-
 .connection-status {
 	line-height: 40px;
 	height: 40px;

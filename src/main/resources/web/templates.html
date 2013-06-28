@@ -1,6 +1,6 @@
 <div id="templates">
 	<div class="row">
-		<div class="well span9">
+		<div class="well span8">
 			<strong>Response template settings</strong>
 			<div class="v10"></div>
 			<div>Each template has a name and an extract script.</div>
@@ -25,28 +25,17 @@
 			<div class="row">
 				<button data-ng-click="fetchTemplates()" class="btn btn-success span3">Fetch templates</button>
 			</div>
-			<div class="v10"></div>
-			<div class="tabbable tabs-left">
-				<ul class="nav nav-tabs" id="template-tabs">
-					<li data-ng-repeat="template in templates"><a href="#{{template.name}}" x-ng-click="setActive(template.name)">{{template.name}}</a></li>
-				</ul>
-				<div id="template-container" class="tab-content">
-					<div data-ng-repeat="template in templates" class="tab-pane" id="{{template.name}}">
-						<form name="submit{{template.name}}">
-							<textarea data-ng-model="template.template" data-ng-required="true" class="script-input span9" rows="20"></textarea>
-							<div class="v10"></div>
-							<textarea data-ng-model="template.extractScript" data-ng-required="true" class="script-input span9" rows="10"></textarea>
-							<div class="row">
-								<div class="offset4">
-									<button data-ng-click="submit()" data-ng-disabled="!submit{{template.name}}.$valid"
-										class="btn btn-inverse span2">Submit template</button>
-									<button data-ng-click="deleteTemplate()" class="btn btn-danger span2">Delete template</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
+			<div class="v50"></div>
+			<table x-ng-show="templates.length > 0" class="table table-condensed">
+				<tbody>
+					<tr x-ng-repeat="template in templates">
+						<td class="span5"><a href="#/templates/edit/{{template.name}}">{{template.name}}</a></td>
+						<td class="span1"><a href="#/templates/script/{{template.name}}"><button class="btn btn-inverse">Edit
+									script</button></a></td>
+						<td class="span1"><button class="btn btn-danger" x-ng-click="deleteTemplate($index)">Delete</button></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>

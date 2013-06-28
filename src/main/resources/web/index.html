@@ -14,10 +14,10 @@
 </head>
 <body>
 	<div x-ng-controller="Main" class="container">
-		<div class="page-header row span8">
+		<div class="page-header row span9">
 			<h1>iteraMock</h1>
 		</div>
-		<div class="navbar navbar-inverse span8 row">
+		<div class="navbar navbar-inverse span9 row">
 			<div class="navbar-inner">
 				<ul id="menu" class="nav">
 					<li x-ng-class="{active: isActive('general')}"><a href="#/general">General</a></li>
@@ -31,11 +31,6 @@
 	<div class="container">
 		<div class="row span12">
 			<div x-ng-view></div>
-		</div>
-	</div>
-	<div class="container">
-		<div class="row span12">
-			<div class="alert-container"></div>
 		</div>
 	</div>
 	<script src="js/main.js"></script>

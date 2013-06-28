@@ -1,0 +1,25 @@
+<div id="edit-template">
+	<div class="row">
+		<div class="well span8">
+			<strong>Extract Script</strong>
+			<div class="v10"></div>
+			<div>Enter a Groovy script.</div>
+			<div class="v50"></div>
+			<div class="row">
+				<div class="offset2">
+					<button x-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
+				</div>
+			</div>
+			<div class="v10"></div>
+			<form name="templateInput">
+				<textarea x-ng-model="template" x-ng-required="true" class="script-input span8" rows="10"></textarea>
+				<div class="row">
+					<div class="offset2">
+						<button x-ng-click="submit()" data-ng-disabled="!templateInput.$valid" class="btn btn-inverse span3">Submit
+							script</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
