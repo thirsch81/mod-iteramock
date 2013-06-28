@@ -1,4 +1,4 @@
-function TemplateCtrl($scope, $routeParams, eventBus) {
+function TemplateCtrl($scope, $routeParams, $log, eventBus) {
 
 	$scope.add = function() {
 		var template = {
@@ -6,7 +6,7 @@ function TemplateCtrl($scope, $routeParams, eventBus) {
 			template : "test-template"
 		};
 		if (isDuplicate(template.name)) {
-			showErrorMessage("Duplicate template name!")
+			$log.warn("duplicate template name");
 		} else {
 			$scope.templates.push(template);
 			$scope.templateName = "";
@@ -17,9 +17,9 @@ function TemplateCtrl($scope, $routeParams, eventBus) {
 	}
 
 	$scope.fetchTemplates = function() {
-		eventBus.send("renderer.templates", {
+		return eventBus.send("renderer.templates", {
 			action : "fetch"
-		}, updateTemplates);
+		}).then(updateTemplates);
 	}
 
 	$scope.deleteTemplate = function(index) {
@@ -67,19 +67,17 @@ function TemplateCtrl($scope, $routeParams, eventBus) {
 					template : template.template
 				});
 			});
-			$scope.$digest();
 		};
 	}
 
 	$scope.templates = [];
 	$scope.templateName = "";
 
-	$scope.fetchTemplates();
-	setTimeout(function() {
-		console.log(JSON.stringify($scope.templates));
-		$scope.template = getTemplate($routeParams.name).template;
-	}, 1000);
-	
-	console.log(JSON.stringify($scope.template));
-
+	eventBus.open.then(function() {
+		$scope.fetchTemplates().then(function() {
+			console.log(JSON.stringify($scope.templates));
+			$scope.template = getTemplate($routeParams.name).template;
+			console.log(JSON.stringify($scope.template));
+		});
+	});
 }

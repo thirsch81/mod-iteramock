@@ -1,6 +1,6 @@
 <div id="dispatch">
 	<div class="row">
-		<div class="well span8">
+		<div class="well span7">
 			<strong>Dispatch rule</strong>
 			<div class="v10"></div>
 			<div>Enter a Groovy script.</div>
@@ -20,25 +20,22 @@
 				.
 			</div>
 			<div>
-				The script must set a string value for
+				The script must assign a string value to
 				<code>template</code>
 				.
 			</div>
-			<div class="v50"></div>
-			<div class="row">
-				<div class="offset2">
-					<button x-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
+			<div class="v25"></div>
+			<form name="dispatchScript">
+				<div class="btn-group">
+					<button x-ng-click="fetch()" class="btn">
+						<span><i class="icon-repeat"></i> Reload</span>
+					</button>
+					<button x-ng-click="submit()" class="btn">
+						<span><i class="icon-upload"></i> Submit</span>
+					</button>
 				</div>
-			</div>
-			<div class="v10"></div>
-			<form name="dispatchRule">
-				<textarea name="script" x-ng-model="script" x-ng-required="true" class="script-input span8" rows="10"></textarea>
-				<div class="row">
-					<div class="offset2">
-						<button x-ng-click="submit()" x-ng-disabled="!dispatchRule.$valid" class="btn btn-inverse span3">Submit
-							script</button>
-					</div>
-				</div>
+				<div class="v10"></div>
+				<textarea name="script" x-ng-model="script" x-ng-required="true" class="script-input span7" rows="10"></textarea>
 			</form>
 		</div>
 	</div>

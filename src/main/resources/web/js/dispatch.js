@@ -1,4 +1,4 @@
-function DispatchCtrl($rootScope, $scope, eventBus) {
+function Dispatch($scope, eventBus) {
 
 	$scope.script = "";
 
@@ -22,4 +22,4 @@ function DispatchCtrl($rootScope, $scope, eventBus) {
 	eventBus.open.then(function() {
 		$scope.fetch();
 	});
-};
+}

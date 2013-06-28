@@ -6,7 +6,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		controller : General
 	}).when("/dispatch", {
 		templateUrl : "dispatch.html",
-		controller : DispatchCtrl
+		controller : Dispatch
 	}).when("/templates", {
 		templateUrl : "templates.html",
 		controller : TemplateCtrl
