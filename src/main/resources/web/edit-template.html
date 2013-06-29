@@ -1,24 +1,26 @@
 <div id="edit-template">
 	<div class="row">
 		<div class="well span8">
-			<strong>Extract Script</strong>
+			<strong>Edit {{name}} template</strong>
 			<div class="v10"></div>
-			<div>Enter a Groovy script.</div>
-			<div class="v50"></div>
-			<div class="row">
-				<div class="offset2">
-					<button x-ng-click="fetch()" class="btn btn-success span3">Fetch script</button>
-				</div>
+			<div>
+				Enter a valid
+				<code>
+					<a href="http://http://groovy.codehaus.org/api/groovy/text/SimpleTemplateEngine.html">groovy.text.SimpleTemplateEngine</a>
+				</code>
+				&nbsp;template.
 			</div>
-			<div class="v10"></div>
 			<form name="templateInput">
-				<textarea x-ng-model="template" x-ng-required="true" class="script-input span8" rows="10"></textarea>
-				<div class="row">
-					<div class="offset2">
-						<button x-ng-click="submit()" data-ng-disabled="!templateInput.$valid" class="btn btn-inverse span3">Submit
-							script</button>
-					</div>
+				<div class="btn-group pull-right">
+					<button x-ng-click="fetch()" class="btn">
+						<span><i class="icon-repeat"></i> Reload</span>
+					</button>
+					<button x-ng-click="submit()" class="btn">
+						<span><i class="icon-upload"></i> Submit</span>
+					</button>
 				</div>
+				<div class="v40"></div>
+				<textarea x-ng-model="template" x-ng-required="true" class="script-input span8" rows="30"></textarea>
 			</form>
 		</div>
 	</div>

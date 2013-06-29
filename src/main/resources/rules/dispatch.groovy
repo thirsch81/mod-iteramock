@@ -1,3 +1,3 @@
 if(root.test.text() == "some content") {
-	template = "test-response"
+    template = "test-response"
 }

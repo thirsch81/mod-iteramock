@@ -7,9 +7,9 @@
 			<div>
 				When responding to a request, a template is chosen from the
 				<code>template</code>
-				value of the dispatch script.
+				value of the executed dispatch script.
 			</div>
-			<div class="v50"></div>
+			<div class="v40"></div>
 			<form name="addTemplate">
 				<div class="control-group">
 					<div class="controls">
@@ -25,14 +25,14 @@
 			<div class="row">
 				<button data-ng-click="fetchTemplates()" class="btn span3">Fetch templates</button>
 			</div>
-			<div class="v50"></div>
+			<div class="v40"></div>
 			<table x-ng-show="templates.length > 0" class="table table-condensed">
 				<tbody>
 					<tr x-ng-repeat="template in templates">
 						<td class="span5"><a href="#/templates/edit/{{template.name}}">{{template.name}}</a></td>
-						<td class="span1"><a href="#/templates/script/{{template.name}}"><button class="btn btn-inverse">Edit
+						<td class="span1"><a href="#/templates/script/{{template.name}}"><button class="btn btn-mini btn-inverse">Edit
 									script</button></a></td>
-						<td class="span1"><button class="btn btn-danger" x-ng-click="deleteTemplate($index)">Delete</button></td>
+						<td class="span1"><button class="btn btn-mini btn-danger" x-ng-click="deleteTemplate($index)">Delete</button></td>
 					</tr>
 				</tbody>
 			</table>
