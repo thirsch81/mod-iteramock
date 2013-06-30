@@ -65,7 +65,7 @@ function TemplateList($scope, $log, $location, eventBus, templates) {
 		} else {
 			$scope.templateName = null;
 			templates.submit(template.name, template.template).then(function() {
-				$location.path("/templates/edit/" + template.name);
+				$location.path("/templates/" + template.name);
 			});
 		}
 	}
@@ -91,7 +91,7 @@ function TemplateList($scope, $log, $location, eventBus, templates) {
 	eventBus.open.then($scope.fetchTemplates);
 }
 
-function TemplateEdit($scope, $routeParams, $log, eventBus, templates) {
+function EditTemplate($scope, $routeParams, $log, eventBus, templates) {
 
 	$scope.name = $routeParams.name;
 	$scope.template = null;
@@ -113,4 +113,11 @@ function TemplateEdit($scope, $routeParams, $log, eventBus, templates) {
 	}
 
 	eventBus.open.then($scope.fetchTemplate($scope.name));
+}
+
+function EditScript($scope, $routeParams, $log, eventBus, templates) {
+
+	$scope.name = $routeParams.name;
+	$scope.script = null;
+
 }

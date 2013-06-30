@@ -1,0 +1,29 @@
+<div id="edit-script">
+	<div class="row">
+		<div class="well span7">
+			<strong>Extract script for template {{name}}</strong>
+			<div class="v10"></div>
+			Enter a Groovy script.<br />The script will be used to extract data from an incoming request.<br />The request content is bound to
+			<code>
+				<a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html">groovy.lang.String </a>request
+			</code>
+			.<br />The root node of the XML document is bound to
+			<code>
+				<a href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html">groovy.util.slurpersupport.GPathResult </a>root
+			</code>
+			.<br />The variables set by the script will the response template's binding.
+			<form name="extractScript">
+				<div class="btn-group pull-right">
+					<button x-ng-click="fetch()" class="btn">
+						<span><i class="icon-repeat"></i> Reload</span>
+					</button>
+					<button x-ng-click="submit()" class="btn">
+						<span><i class="icon-upload"></i> Submit</span>
+					</button>
+				</div>
+				<div class="v40"></div>
+				<textarea name="script" x-ng-model="script" class="script-input span7" rows="10"></textarea>
+			</form>
+		</div>
+	</div>
+</div>

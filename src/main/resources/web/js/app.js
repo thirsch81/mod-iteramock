@@ -8,11 +8,14 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl : "dispatch.html",
 		controller : Dispatch
 	}).when("/templates", {
-		templateUrl : "templates.html",
+		templateUrl : "template-list.html",
 		controller : TemplateList
-	}).when("/templates/edit/:name", {
-		templateUrl : "template-edit.html",
-		controller : TemplateEdit
+	}).when("/templates/:name", {
+		templateUrl : "edit-template.html",
+		controller : EditTemplate
+	}).when("/templates/script/:name", {
+		templateUrl : "edit-script.html",
+		controller : EditScript
 	}).otherwise({
 		redirectTo : "/general"
 	});

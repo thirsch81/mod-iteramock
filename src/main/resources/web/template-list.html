@@ -3,20 +3,18 @@
 		<div class="well span6">
 			<strong>Response templates</strong>
 			<div class="v10"></div>
-			Each template has a name and an extract script.<br /> When responding to a request, a template is picked by the
+			Each template has a name and an extract script.<br /> When responding to a request, the response template is picked by the
 			<code>template</code>
 			value of the executed dispatch script.
 			<div class="v25"></div>
 			<form name="addTemplate">
-				<div class="control-group">
-					<div class="controls">
-						<div class="input-append">
-							<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^\w{3,16}$/" class="input" placeholder="Template name"
-								type="text">
-							<button data-ng-click="add()" data-ng-disabled="!addTemplate.$valid" class="btn add-on">New template</button>
-						</div>
-					</div>
+
+				<div class="input-append">
+					<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^\w{3,16}$/" class="input" placeholder="Template name"
+						type="text">
+					<button data-ng-click="add()" data-ng-disabled="!addTemplate.$valid" class="btn add-on">New template</button>
 				</div>
+
 			</form>
 			<div class="row pull-right">
 				<button data-ng-click="fetchTemplates()" class="btn">
@@ -27,8 +25,8 @@
 			<table x-ng-show="templates.length > 0" class="table table-condensed">
 				<tbody>
 					<tr x-ng-repeat="template in templates">
-						<td class="span4"><a href="#/templates/edit/{{template.name}}">{{template.name}}</a></td>
-						<td class="span1"><a href="#/templates/script/{{template.name}}"><button class="btn btn-mini btn-inverse">Edit
+						<td class="span3"><a href="#/templates/{{template.name}}">{{template.name}}</a></td>
+						<td class="span2"><a href="#/templates/script/{{template.name}}"><button class="btn btn-mini btn-inverse pull-right">Edit
 									script</button></a></td>
 						<td class="span1"><button class="btn btn-mini btn-danger" x-ng-click="deleteTemplate($index)">Delete</button></td>
 					</tr>
