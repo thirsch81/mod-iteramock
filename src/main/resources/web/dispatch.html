@@ -3,27 +3,17 @@
 		<div class="well span7">
 			<strong>Dispatch rule</strong>
 			<div class="v10"></div>
-			<div>Enter a Groovy script.</div>
-			<div>
-				The incoming request content is bound to
-				<code>
-					<a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html">groovy.lang.String</a>&nbsp;request
-				</code>
-				.
-			</div>
-			<div>
-				The root node of the XML document is bound to
-				<code>
-					<a href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html">groovy.util.slurpersupport.GPathResult</a>
-					&nbsp;root
-				</code>
-				.
-			</div>
-			<div>
-				The script must assign a string value to
-				<code>template</code>
-				.
-			</div>
+			Enter a Groovy script.<br />The incoming request content is bound to
+			<code>
+				<a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html">groovy.lang.String </a>request
+			</code>
+			.<br />The root node of the XML document is bound to
+			<code>
+				<a href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html">groovy.util.slurpersupport.GPathResult </a>root
+			</code>
+			.<br />The script must assign a string value to
+			<code>template</code>
+			.
 			<form name="dispatchScript">
 				<div class="btn-group pull-right">
 					<button x-ng-click="fetch()" class="btn">

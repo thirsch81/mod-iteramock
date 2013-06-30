@@ -63,7 +63,7 @@ app.factory("eventBus", function($rootScope, $location, $q, $log) {
 		open : open.promise,
 		closed : closed.promise,
 		send : send
-	};
+	}
 });
 
 app.factory("templates", function($rootScope, $q, $log, eventBus) {
@@ -75,30 +75,23 @@ app.factory("templates", function($rootScope, $q, $log, eventBus) {
 	}
 
 	function fetch(name) {
-		return fetchAll().then(function(reply) {
-			return getTemplate(name, reply.templates);
+		return eventBus.send("renderer.templates", {
+			action : "fetch",
+			name : name
 		});
 	}
 
 	function submit(name, template) {
 		return eventBus.send("renderer.templates", {
-			action : "submit"
+			action : "submit",
+			name : name,
+			template : template
 		});
-	}
-
-	function getTemplate(name, templates) {
-		var result = {};
-		angular.forEach(templates, function(template, index) {
-			if (template.name == name) {
-				result = template.template;
-			}
-		});
-		return result;
 	}
 
 	return {
 		fetchAll : fetchAll,
 		fetch : fetch,
 		submit : submit
-	};
+	}
 });

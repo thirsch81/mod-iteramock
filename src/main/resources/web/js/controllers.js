@@ -31,51 +31,47 @@ function Dispatch($scope, eventBus) {
 			action : "submit",
 			script : $scope.script
 		});
-	};
+	}
 
 	$scope.fetch = function() {
 		eventBus.send("extractor.dispatchRule", {
 			action : "fetch"
 		}).then(updateScript);
-	};
+	}
 
 	function updateScript(reply) {
 		$scope.script = reply.script;
-	};
+	}
 
-	eventBus.open.then(function() {
-		$scope.fetch();
-	});
+	eventBus.open.then($scope.fetch);
 }
 
-function TemplateList($scope, $log, eventBus, templates) {
+function TemplateList($scope, $log, $location, eventBus, templates) {
 
 	$scope.templateName = null;
 	$scope.templates = [];
-
-	$scope.add = function() {
-		var template = {
-			name : $scope.templateName,
-			template : "test-template"
-		};
-		if (isDuplicate(template.name)) {
-			$log.warn("duplicate template name");
-		} else {
-			$scope.templates.push(template);
-			$scope.templateName = null;
-		};
-	}
 
 	$scope.fetchTemplates = function() {
 		templates.fetchAll().then(updateTemplates);
 	}
 
-	$scope.deleteTemplate = function(index) {
-		$scope.templates.splice(index, 1);
+	$scope.add = function() {
+		var template = {
+			name : $scope.templateName,
+			template : ""
+		}
+		if (isDuplicate(template.name)) {
+			$log.warn("duplicate template name");
+		} else {
+			$scope.templateName = null;
+			templates.submit(template.name, template.template).then(function() {
+				$location.path("/templates/edit/" + template.name);
+			});
+		}
 	}
 
-	function isDuplicate(name) {
-		return _.contains(_.pluck($scope.templates, "name"), name);
+	$scope.deleteTemplate = function(index) {
+		$scope.templates.splice(index, 1);
 	}
 
 	function updateTemplates(reply) {
@@ -88,6 +84,10 @@ function TemplateList($scope, $log, eventBus, templates) {
 		});
 	}
 
+	function isDuplicate(name) {
+		return _.contains(_.pluck($scope.templates, "name"), name);
+	}
+
 	eventBus.open.then($scope.fetchTemplates);
 }
 
@@ -97,10 +97,20 @@ function TemplateEdit($scope, $routeParams, $log, eventBus, templates) {
 	$scope.template = null;
 
 	$scope.fetchTemplate = function(name) {
-		$scope.template = templates.fetch(name);
+		templates.fetch(name).then(function(reply) {
+			$scope.template = reply.template;
+		}, function(error) {
+			// TODO error message
+		});
 	}
 
-	eventBus.open.then(function() {
-		$scope.fetchTemplate($scope.name);
-	});
+	$scope.submitTemplate = function(template) {
+		templates.submit($scope.name, template).then(function(reply) {
+			// TODO success message
+		}, function(error) {
+			// TODO error message
+		})
+	}
+
+	eventBus.open.then($scope.fetchTemplate($scope.name));
 }

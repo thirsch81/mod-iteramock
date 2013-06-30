@@ -3,19 +3,17 @@
 		<div class="well span8">
 			<strong>Edit {{name}} template</strong>
 			<div class="v10"></div>
-			<div>
-				Enter a valid
-				<code>
-					<a href="http://http://groovy.codehaus.org/api/groovy/text/SimpleTemplateEngine.html">groovy.text.SimpleTemplateEngine</a>
-				</code>
-				&nbsp;template.
-			</div>
+			Enter a valid
+			<code>
+				<a href="http://groovy.codehaus.org/api/groovy/text/SimpleTemplateEngine.html">groovy.text.SimpleTemplateEngine</a>
+			</code>
+			<span>&nbsp;template.</span>
 			<form name="templateInput">
 				<div class="btn-group pull-right">
 					<button x-ng-click="fetchTemplate(name)" class="btn">
 						<span><i class="icon-repeat"></i> Reload</span>
 					</button>
-					<button x-ng-click="submit()" class="btn">
+					<button x-ng-click="submitTemplate(template)" class="btn">
 						<span><i class="icon-upload"></i> Submit</span>
 					</button>
 				</div>
