@@ -3,15 +3,11 @@
 		<div class="well span7">
 			<strong>Extract script for template {{name}}</strong>
 			<div class="v10"></div>
-			Enter a Groovy script.<br />The script will be used to extract data from an incoming request.<br />The request content is bound to
-			<code>
-				<a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html">groovy.lang.String </a>request
-			</code>
-			.<br />The root node of the XML document is bound to
-			<code>
-				<a href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html">groovy.util.slurpersupport.GPathResult </a>root
-			</code>
-			.<br />The variables set by the script will the response template's binding.
+			Enter a Groovy script.<br />The script will be used to extract data from an incoming request.<br />The request content is bound to<span
+				class="code"><a href="http://groovy.codehaus.org/groovy-jdk/java/lang/String.html"> groovy.lang.String </a>request</span>.<br />The
+			root node of the XML document is bound to<span class="code"><a
+				href="http://groovy.codehaus.org/api/groovy/util/slurpersupport/GPathResult.html"> groovy.util.slurpersupport.GPathResult </a>root</span>.<br />The
+			variables set by the script will the response template's binding.
 			<form name="extractScript">
 				<div class="btn-group pull-right">
 					<button x-ng-click="fetch()" class="btn">

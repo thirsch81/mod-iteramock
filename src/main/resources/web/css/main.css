@@ -12,6 +12,10 @@ textarea.script-input {
 	height: 30px;
 }
 
+.code {
+	font-family: monospace;
+}
+
 .v10 {
 	height: 10px;
 }
