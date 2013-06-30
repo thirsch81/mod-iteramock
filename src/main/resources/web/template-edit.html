@@ -12,7 +12,7 @@
 			</div>
 			<form name="templateInput">
 				<div class="btn-group pull-right">
-					<button x-ng-click="fetch()" class="btn">
+					<button x-ng-click="fetchTemplate(name)" class="btn">
 						<span><i class="icon-repeat"></i> Reload</span>
 					</button>
 					<button x-ng-click="submit()" class="btn">
@@ -20,7 +20,7 @@
 					</button>
 				</div>
 				<div class="v40"></div>
-				<textarea x-ng-model="template" x-ng-required="true" class="script-input span8" rows="30"></textarea>
+				<textarea x-ng-model="template" class="script-input span8" rows="30"></textarea>
 			</form>
 		</div>
 	</div>
