@@ -11,6 +11,7 @@ public class ExtractorVerticle extends Verticle {
 		readRuleFiles()
 		vertx.eventBus.registerHandler("extractor.extract", handleExtract)
 		vertx.eventBus.registerHandler("extractor.dispatchRule", handleDispatchRule)
+		vertx.eventBus.registerHandler("extractor.extractScripts", handleExtractScripts)
 		container.logger.info("ExtractorVerticle started")
 	}
 
@@ -55,67 +56,168 @@ public class ExtractorVerticle extends Verticle {
 	}
 
 	def handleDispatchRule = {  message ->
+
 		def body = message.body
-		container.logger.info("ExtractorVerticle: received ${body}")
-		def rules = rules()
-		try {
-			if("submit".equals(body.action)) {
-				rules["dispatch"] = body.script
-				message.reply(submitOk())
-				container.logger.info("ExtractorVerticle: accepted dispatch rule from client")
-			}
-			if("fetch".equals(body.action)) {
-				message.reply(fetchOk(rules["dispatch"]))
-				container.logger.info("ExtractorVerticle: sent dispatch rule to client")
-			}
-		} catch (Exception e) {
-			def errorMsg = "${e.message}: Expected message format: [action: <action>, (script: <script>)]"
-			container.logger.error(errorMsg)
+		logDebug("Received ${body}")
+
+		if(!("action" in body)) {
+
+			def errorMsg = "Expected message format: [action: <action>, (script: <script>)], not " + body
+			logError(errorMsg)
 			message.reply(error(errorMsg))
+		} else {
+
+			switch (body.action) {
+
+				case "submit":
+
+					rules()["dispatch"] = body.script
+					message.reply(submitOk())
+					logDebug("Accepted dispatch rule from client")
+					break
+
+				case "fetch":
+
+					message.reply(fetchOk(rules()["dispatch"]))
+					logDebug("Sent dispatch rule to client")
+					break
+
+				default:
+					def errorMsg = "Unknown action '" + body.action + "', expected: fetch|submit"
+					logError(errorMsg)
+					message.reply(error(errorMsg))
+			}
 		}
 	}
 
-	def handleExtract = {  message ->
-		def body = message.body
-		container.logger.info("ExtractorVerticle: received ${body}")
-		try {
-			assert body.source
-		} catch (Exception e) {
-			def errorMsg = "${e.message}: Expected message format: [source: <source>]"
-			container.logger.error(errorMsg)
-			message.reply(error(errorMsg))
-		}
+	def handleExtractScripts = {  message ->
 
-		try {
-			def rules = rules()
-			def start = now()
-			def shell = prepareShell(body.source)
-			def p_time = now() - start
-			start = now()
-			def template = dispatch(shell, rules)
-			def d_time = now() - start
-			start = now()
-			message.reply(extract(shell, rules, template))
-			def e_time = now() - start
-			container.logger.info("ExtractorVerticle: parsed XML in ${p_time}ms, dispatched in ${d_time}ms and extracted binding in ${e_time}ms")
-		} catch (Exception e) {
-			container.logger.error(e.message)
-			message.reply(error(e.message))
+		def body = message.body
+		logDebug("Received ${body}")
+
+		if(!("action" in body)) {
+
+			def errorMsg = "Expected message format: [action: <action>, name: <name>, (script: <script>)], not " + body
+			logError(errorMsg)
+			message.reply(error(errorMsg))
+		} else {
+
+			switch (body.action) {
+
+				case "submit":
+
+					if(!("name" in body)) {
+
+						def errorMsg = "Expected message format: [action: 'submit', name: <name>, script: <script>], not " + body
+						logError(errorMsg)
+						message.reply(error(errorMsg))
+					} else {
+
+						rules()[body.name] = body.script
+						message.reply(submitOk())
+						logDebug("Accepted extract script " + body.name + " from client")
+					}
+					break
+
+				case "fetch":
+
+					if(!("name" in body)) {
+
+						def errorMsg = "Expected message format: [action: 'fetch', name: <name>], not " + body
+						logError(errorMsg)
+						message.reply(error(errorMsg))
+					} else {
+
+						message.reply(fetchOk(rules()[body.name]))
+						logDebug("Sent extract script " + body.name + " to client")
+					}
+					break
+
+				default:
+					def errorMsg = "Unknown action '" + body.action + "', expected: fetch|submit"
+					logError(errorMsg)
+					message.reply(error(errorMsg))
+			}
+		}
+	}
+
+	def handleExtract = { message ->
+
+		def body = message.body
+		logDebug("Received ${body}")
+
+		if(!("source" in body)) {
+
+			def errorMsg = "Expected message format: [source: <source>], not" + body
+			logError(errorMsg)
+			message.reply(error(errorMsg))
+		} else {
+			try {
+				def rules = rules()
+				def start = now()
+				def shell = prepareShell(body.source)
+				def p_time = now() - start
+				start = now()
+				def template = dispatch(shell, rules)
+				def d_time = now() - start
+				start = now()
+				message.reply(extract(shell, rules, template))
+				def e_time = now() - start
+				logDebug("Parsed XML in ${p_time}ms, dispatched in ${d_time}ms and extracted binding in ${e_time}ms")
+			} catch (Exception e) {
+
+				logError(e.message)
+				message.reply(error(e.message))
+			}
 		}
 	}
 
 	def readRuleFiles() {
-		def r_time = now()
-		def rules = rules()
-		try {
-			new File("rules").eachFile {
-				container.logger.info("ExtractorVerticle: reading rule script ${it}")
-				rules[it.name - ".groovy"] = it.text
+		vertx.fileSystem.readDir("rules", ".*\\.groovy") { result ->
+			if (result.succeeded) {
+				readRulesDirectory(result.result)
+			} else {
+				logError("No rules directory found")
 			}
-		} catch (Exception e) {
-			container.logger.error("ExtractorVerticle: ${e.message}")
 		}
-		container.logger.info("ExtractorVerticle: read ${rules.size()} rule scripts in ${now() - r_time}ms")
+	}
+
+	def readRulesDirectory(files) {
+		if(files) {
+			logDebug("Reading rule files...")
+			for (file in files) {
+				readRuleFile(file)
+			}
+		} else {
+			logError("No rule files to read")
+		}
+	}
+
+	def readRuleFile(file) {
+		vertx.fileSystem.readFile(file) { result ->
+			if (result.succeeded) {
+				rules()[new File(file).name - ".groovy"] = result.result.toString()
+				logDebug("Read rule file ${file}")
+			} else {
+				logError("Error reading rule ${file}", result.cause)
+			}
+		}
+	}
+
+	def logInfo(msg, err = null) {
+		if(container.logger.infoEnabled) {
+			container.logger.info(msg, err)
+		}
+	}
+
+	def logError(msg, err = null) {
+		container.logger.error(msg, err)
+	}
+
+	def logDebug(msg, err = null) {
+		if(container.logger.debugEnabled) {
+			container.logger.debug(msg, err)
+		}
 	}
 
 	def now = { System.currentTimeMillis() }

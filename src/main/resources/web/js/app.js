@@ -26,23 +26,25 @@ app.factory("eventBus", function($rootScope, $location, $q, $log) {
 	$log.log("initializing eventBus");
 	eb = new vertx.EventBus($location.protocol() + "://" + $location.host() + ":" + $location.port() + "/eventbus");
 
-	var open = $q.defer();
+	var q_open = $q.defer();
+	this.open = q_open.promise;
 	eb.onopen = function() {
 		$log.log("eventBus opened");
-		$rootScope.$apply(open.resolve);
+		$rootScope.$apply(q_open.resolve);
 	}
 
-	var closed = $q.defer();
+	var q_closed = $q.defer();
+	this.closed = q_closed.promise;
 	eb.onclose = function() {
 		$log.log("eventBus closed");
-		$rootScope.$apply(closed.resolve);
+		$rootScope.$apply(q_closed.resolve);
 	}
 
 	function ready() {
 		return eb.readyState() == 1;
 	}
 
-	function send(address, message) {
+	this.send = function(address, message) {
 		var response = $q.defer();
 		if (ready()) {
 			$log.log("sending", JSON.stringify(message), "to address", address);
@@ -62,29 +64,25 @@ app.factory("eventBus", function($rootScope, $location, $q, $log) {
 		return response.promise;
 	}
 
-	return {
-		open : open.promise,
-		closed : closed.promise,
-		send : send
-	}
+	return this;
 });
 
-app.factory("templates", function($rootScope, $q, $log, eventBus) {
+app.factory("templates", function(eventBus) {
 
-	function fetchAll() {
+	this.fetchAll = function() {
 		return eventBus.send("renderer.templates", {
 			action : "fetch"
 		});
 	}
 
-	function fetch(name) {
+	this.fetch = function(name) {
 		return eventBus.send("renderer.templates", {
 			action : "fetch",
 			name : name
 		});
 	}
 
-	function submit(name, template) {
+	this.submit = function(name, template) {
 		return eventBus.send("renderer.templates", {
 			action : "submit",
 			name : name,
@@ -92,9 +90,43 @@ app.factory("templates", function($rootScope, $q, $log, eventBus) {
 		});
 	}
 
-	return {
-		fetchAll : fetchAll,
-		fetch : fetch,
-		submit : submit
+	return this;
+});
+
+app.factory("dispatchRule", function(eventBus) {
+
+	this.fetch = function() {
+		return eventBus.send("extractor.dispatchRule", {
+			action : "fetch"
+		});
 	}
+
+	this.submit = function(script) {
+		return eventBus.send("extractor.dispatchRule", {
+			action : "submit",
+			script : script
+		});
+	}
+
+	return this;
+});
+
+app.factory("extractScripts", function(eventBus) {
+
+	this.fetch = function(name) {
+		return eventBus.send("extractor.extractScripts", {
+			action : "fetch",
+			name : name
+		});
+	}
+
+	this.submit = function(name, script) {
+		return eventBus.send("extractor.extractScripts", {
+			action : "submit",
+			name : name,
+			script : script
+		});
+	}
+
+	return this;
 });

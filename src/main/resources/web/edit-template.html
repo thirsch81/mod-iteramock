@@ -1,6 +1,6 @@
 <div id="edit-template">
 	<div class="row">
-		<div class="well span8">
+		<div class="well span9">
 			<strong>Edit {{name}} template</strong>
 			<div class="v10"></div>
 			Enter a valid<span class="code"><a href="http://groovy.codehaus.org/api/groovy/text/SimpleTemplateEngine.html">
@@ -10,12 +10,12 @@
 					<button x-ng-click="fetchTemplate(name)" class="btn">
 						<span><i class="icon-repeat"></i> Reload</span>
 					</button>
-					<button x-ng-click="submitTemplate(template)" class="btn">
+					<button x-ng-click="submitTemplate(name, template)" class="btn">
 						<span><i class="icon-upload"></i> Submit</span>
 					</button>
 				</div>
 				<div class="v40"></div>
-				<textarea x-ng-model="template" class="script-input span8" rows="30"></textarea>
+				<textarea x-ng-model="template" class="script-input span9" rows="30"></textarea>
 			</form>
 		</div>
 	</div>

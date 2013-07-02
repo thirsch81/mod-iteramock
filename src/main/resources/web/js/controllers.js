@@ -1,4 +1,4 @@
-function Main($scope, $location, $log, eventBus) {
+function Main($scope, $location, eventBus) {
 
 	$scope.status = "waiting";
 	$scope.statusClass = "text-warning";
@@ -22,21 +22,16 @@ function General($scope, eventBus) {
 
 }
 
-function Dispatch($scope, eventBus) {
+function Dispatch($scope, eventBus, dispatchRule) {
 
 	$scope.script = null;
 
-	$scope.submit = function() {
-		eventBus.send("extractor.dispatchRule", {
-			action : "submit",
-			script : $scope.script
-		});
+	$scope.submit = function(script) {
+		dispatchRule.submit(script);
 	}
 
 	$scope.fetch = function() {
-		eventBus.send("extractor.dispatchRule", {
-			action : "fetch"
-		}).then(updateScript);
+		dispatchRule.fetch().then(updateScript);
 	}
 
 	function updateScript(reply) {
@@ -91,7 +86,7 @@ function TemplateList($scope, $log, $location, eventBus, templates) {
 	eventBus.open.then($scope.fetchTemplates);
 }
 
-function EditTemplate($scope, $routeParams, $log, eventBus, templates) {
+function EditTemplate($scope, $routeParams, eventBus, templates) {
 
 	$scope.name = $routeParams.name;
 	$scope.template = null;
@@ -104,8 +99,8 @@ function EditTemplate($scope, $routeParams, $log, eventBus, templates) {
 		});
 	}
 
-	$scope.submitTemplate = function(template) {
-		templates.submit($scope.name, template).then(function(reply) {
+	$scope.submitTemplate = function(name, template) {
+		templates.submit(name, template).then(function(reply) {
 			// TODO success message
 		}, function(error) {
 			// TODO error message
@@ -115,9 +110,22 @@ function EditTemplate($scope, $routeParams, $log, eventBus, templates) {
 	eventBus.open.then($scope.fetchTemplate($scope.name));
 }
 
-function EditScript($scope, $routeParams, $log, eventBus, templates) {
+function EditScript($scope, $routeParams, eventBus, extractScripts) {
 
 	$scope.name = $routeParams.name;
 	$scope.script = null;
 
+	$scope.fetchScript = function(name) {
+		extractScripts.fetch(name).then(updateScript);
+	}
+
+	$scope.submitScript = function(name, script) {
+		extractScripts.submit(name, script);
+	}
+
+	function updateScript(reply) {
+		$scope.script = reply.script;
+	}
+
+	eventBus.open.then($scope.fetchScript($scope.name));
 }
