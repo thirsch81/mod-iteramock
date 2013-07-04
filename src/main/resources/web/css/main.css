@@ -16,6 +16,10 @@ textarea.script-input {
 	font-family: monospace;
 }
 
+.alert {
+	display: table;
+}
+
 .v10 {
 	height: 10px;
 }

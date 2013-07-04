@@ -21,7 +21,7 @@ app.config(['$routeProvider', function($routeProvider) {
 	});
 }]);
 
-app.factory("eventBus", function($rootScope, $location, $q, $log) {
+app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 
 	$log.log("initializing eventBus");
 	eb = new vertx.EventBus($location.protocol() + "://" + $location.host() + ":" + $location.port() + "/eventbus");
@@ -47,19 +47,20 @@ app.factory("eventBus", function($rootScope, $location, $q, $log) {
 	this.send = function(address, message) {
 		var response = $q.defer();
 		if (ready()) {
-			$log.log("sending", JSON.stringify(message), "to address", address);
 			eb.send(address, message, function(reply) {
-				$log.log("got reply " + JSON.stringify(reply));
 				$rootScope.$apply(function() {
 					if ("ok" == reply.status) {
 						response.resolve(reply);
+						messages.addSuccess();
 					} else {
 						response.reject(reply.message);
+						messages.addError(reply.message);
 					}
 				});
 			});
 		} else {
-			$log.warn("eventBus not ready, can't send", JSON.stringify(message), "to address", address)
+			var errorMsg = "EventBus not ready, please reload page!";
+			messages.addError(errorMsg);
 		}
 		return response.promise;
 	}
@@ -128,5 +129,44 @@ app.factory("extractScripts", function(eventBus) {
 		});
 	}
 
+	return this;
+});
+
+app.factory("messages", function($timeout) {
+
+	var messages = [];
+
+	var addMessage = function(alertClass, head, text) {
+		if (messages.length > 4) {
+			messages.splice(0, 1);
+		}
+		messages.push({
+			alertClass : alertClass,
+			head : head,
+			text : text
+		});
+	}
+
+	this.addSuccess = function() {
+		addMessage("alert-success", "Ok!");
+		timedRemove(messages, 3000);
+	}
+
+	this.addError = function(text) {
+		addMessage("alert-error", "Error!", text);
+		timedRemove(messages, 10000);
+	}
+
+	this.remove = function(index) {
+		messages.splice(index, 1);
+	}
+
+	var timedRemove = function(messages, timeout) {
+		$timeout(function() {
+			messages.splice(0, 1);
+		}, timeout);
+	}
+
+	this.messages = messages;
 	return this;
 });

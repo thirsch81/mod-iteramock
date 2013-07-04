@@ -1,4 +1,4 @@
-function Main($scope, $location, eventBus) {
+function Main($scope, $location, $log, eventBus, messages) {
 
 	$scope.status = "waiting";
 	$scope.statusClass = "text-warning";
@@ -15,6 +15,12 @@ function Main($scope, $location, eventBus) {
 	$scope.isActive = function(route) {
 		var regex = RegExp(route);
 		return regex.test($location.path());
+	}
+
+	$scope.messages = messages.messages;
+
+	$scope.removeMessage = function(index) {
+		messages.remove(index);
 	}
 }
 
@@ -107,7 +113,9 @@ function EditTemplate($scope, $routeParams, eventBus, templates) {
 		})
 	}
 
-	eventBus.open.then($scope.fetchTemplate($scope.name));
+	eventBus.open.then(function() {
+		$scope.fetchTemplate($scope.name);
+	});
 }
 
 function EditScript($scope, $routeParams, eventBus, extractScripts) {
