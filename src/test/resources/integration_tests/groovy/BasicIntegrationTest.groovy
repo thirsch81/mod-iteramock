@@ -73,6 +73,7 @@ def testExtractorVerticleFetchDispatchRule() {
 def testExtractorVerticleSubmitDispatchRule() {
 	container.deployWorkerVerticle("groovy:" + ExtractorVerticle.class.name) { result ->
 		assertTrue("${result.cause()}", result.succeeded)
+		Thread.sleep(3000); // Hacky, wait for async file reading...
 		vertx.eventBus.send("extractor.dispatchRule", ["action" : "submit", "script": /template = "response"/]) { submitReply ->
 			assertNotNull(submitReply)
 			container.logger.info(submitReply.body)

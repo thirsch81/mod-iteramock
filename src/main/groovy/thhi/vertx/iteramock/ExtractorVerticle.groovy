@@ -55,89 +55,77 @@ public class ExtractorVerticle extends Verticle {
 		bindingOk(template, shell.context.variables)
 	}
 
-	def handleDispatchRule = {  message ->
+	def handleDispatchRule =  { message ->
 
 		def body = message.body
 		logDebug("Received ${body}")
 
 		if(!("action" in body)) {
 
-			def errorMsg = "Expected message format: [action: <action>, (script: <script>)], not " + body
-			logError(errorMsg)
-			message.reply(error(errorMsg))
-		} else {
+			replyErrorTo(message, "Expected message format: [action: <action>, (script: <script>)], not " + body)
+			return
+		}
 
-			switch (body.action) {
+		switch (body.action) {
 
-				case "submit":
+			case "submit":
 
-					rules()["dispatch"] = body.script
-					message.reply(submitOk())
-					logDebug("Accepted dispatch rule from client")
-					break
+				rules()["dispatch"] = body.script
+				message.reply(submitOk())
+				logDebug("Accepted dispatch rule from client")
+				break
 
-				case "fetch":
+			case "fetch":
 
-					message.reply(fetchOk(rules()["dispatch"]))
-					logDebug("Sent dispatch rule to client")
-					break
+				message.reply(fetchOk(rules()["dispatch"]))
+				logDebug("Sent dispatch rule to client")
+				break
 
-				default:
-					def errorMsg = "Unknown action '" + body.action + "', expected: fetch|submit"
-					logError(errorMsg)
-					message.reply(error(errorMsg))
-			}
+			default:
+				replyErrorTo(message, "Unknown action '" + body.action + "', expected: fetch|submit")
 		}
 	}
 
-	def handleExtractScripts = {  message ->
+	def handleExtractScripts = { message ->
 
 		def body = message.body
 		logDebug("Received ${body}")
 
 		if(!("action" in body)) {
 
-			def errorMsg = "Expected message format: [action: <action>, name: <name>, (script: <script>)], not " + body
-			logError(errorMsg)
-			message.reply(error(errorMsg))
-		} else {
+			replyErrorTo(message, "Expected message format: [action: <action>, name: <name>, (script: <script>)], not " + body)
+			return
+		}
 
-			switch (body.action) {
+		switch (body.action) {
 
-				case "submit":
+			case "submit":
 
-					if(!("name" in body)) {
+				if(!("name" in body)) {
 
-						def errorMsg = "Expected message format: [action: 'submit', name: <name>, script: <script>], not " + body
-						logError(errorMsg)
-						message.reply(error(errorMsg))
-					} else {
+					replyErrorTo(message, "Expected message format: [action: 'submit', name: <name>, script: <script>], not " + body)
+				} else {
 
-						rules()[body.name] = body.script
-						message.reply(submitOk())
-						logDebug("Accepted extract script " + body.name + " from client")
-					}
-					break
+					rules()[body.name] = body.script
+					message.reply(submitOk())
+					logDebug("Accepted extract script " + body.name + " from client")
+				}
+				break
 
-				case "fetch":
+			case "fetch":
 
-					if(!("name" in body)) {
+				if(!("name" in body)) {
 
-						def errorMsg = "Expected message format: [action: 'fetch', name: <name>], not " + body
-						logError(errorMsg)
-						message.reply(error(errorMsg))
-					} else {
+					replyErrorTo(message, "Expected message format: [action: 'fetch', name: <name>], not " + body)
+				} else {
 
-						message.reply(fetchOk(rules()[body.name]))
-						logDebug("Sent extract script " + body.name + " to client")
-					}
-					break
+					message.reply(fetchOk(rules()[body.name]))
+					logDebug("Sent extract script " + body.name + " to client")
+				}
+				break
 
-				default:
-					def errorMsg = "Unknown action '" + body.action + "', expected: fetch|submit"
-					logError(errorMsg)
-					message.reply(error(errorMsg))
-			}
+			default:
+				replyErrorTo(message, "Unknown action '" + body.action + "', expected: fetch|submit")
 		}
 	}
 
@@ -148,28 +136,30 @@ public class ExtractorVerticle extends Verticle {
 
 		if(!("source" in body)) {
 
-			def errorMsg = "Expected message format: [source: <source>], not" + body
-			logError(errorMsg)
-			message.reply(error(errorMsg))
-		} else {
-			try {
-				def rules = rules()
-				def start = now()
-				def shell = prepareShell(body.source)
-				def p_time = now() - start
-				start = now()
-				def template = dispatch(shell, rules)
-				def d_time = now() - start
-				start = now()
-				message.reply(extract(shell, rules, template))
-				def e_time = now() - start
-				logDebug("Parsed XML in ${p_time}ms, dispatched in ${d_time}ms and extracted binding in ${e_time}ms")
-			} catch (Exception e) {
-
-				logError(e.message)
-				message.reply(error(e.message))
-			}
+			replyErrorTo(message, "Expected message format: [source: <source>], not" + body)
+			return
 		}
+		try {
+			def rules = rules()
+			def start = now()
+			def shell = prepareShell(body.source)
+			def p_time = now() - start
+			start = now()
+			def template = dispatch(shell, rules)
+			def d_time = now() - start
+			start = now()
+			message.reply(extract(shell, rules, template))
+			def e_time = now() - start
+			logDebug("Parsed XML in ${p_time}ms, dispatched in ${d_time}ms and extracted binding in ${e_time}ms")
+		} catch (Exception e) {
+
+			replyErrorTo(message, e.message)
+		}
+	}
+
+	def replyErrorTo(message, text) {
+		logError(text)
+		message.reply(error(text))
 	}
 
 	def readRuleFiles() {
