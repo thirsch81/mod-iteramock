@@ -1,4 +1,4 @@
-package thhi.vertx.iteramock
+package thhi.vertx.mods
 
 import groovy.text.SimpleTemplateEngine
 
@@ -27,32 +27,16 @@ public class ExtractorVerticle extends Verticle {
 		["status": "ok", "name" : name ,"binding": binding]
 	}
 
+	def bindingError(name, message) {
+		["status": "error", "name" : name ,"message": message]
+	}
+
 	def fetchOk(script) {
 		["status": "ok", "script": script]
 	}
+
 	def submitOk() {
 		["status": "ok"]
-	}
-
-	def prepareShell(source) {
-		def root = new XmlSlurper().parseText(source)
-		def binding = new Binding()
-		binding.setVariable("root", root)
-		binding.setVariable("request", source)
-		new GroovyShell(binding)
-	}
-
-	def dispatch(shell, rules) {
-		shell.evaluate(rules["dispatch"])
-		shell.context.getVariable("template")
-	}
-
-	def extract(shell, rules, template) {
-		shell.context.variables.remove("template")
-		shell.evaluate(rules[template])
-		shell.context.variables.remove("root")
-		shell.context.variables.remove("request")
-		bindingOk(template, shell.context.variables)
 	}
 
 	def handleDispatchRule =  { message ->
@@ -156,6 +140,39 @@ public class ExtractorVerticle extends Verticle {
 			replyErrorTo(message, e.message)
 		}
 	}
+
+	def prepareShell(source) {
+		def root = new XmlSlurper().parseText(source)
+		def namespacePattern = ~/xmlns:([^=]*)="([^"]*)"/
+		def matcher = namespacePattern.matcher(source)
+		def namespaces = [:]
+		while (matcher.find()) {
+			namespaces.put(matcher.group(1), matcher.group(2))
+		}
+		root.declareNamespace(namespaces)
+		def binding = new Binding()
+		binding.setVariable("root", root)
+		binding.setVariable("request", source)
+		new GroovyShell(binding)
+	}
+
+	def dispatch(shell, rules) {
+		shell.evaluate(rules["dispatch"])
+		shell.context.variables.template
+	}
+
+	// returns the message
+	def extract(shell, rules, template) {
+		shell.context.variables.remove("template")
+		if(!rules[template]) {
+			return bindingError(template, "No extract rule defined for template " + template)
+		}
+		shell.evaluate(rules[template])
+		shell.context.variables.remove("root")
+		shell.context.variables.remove("request")
+		bindingOk(template, shell.context.variables)
+	}
+
 
 	def replyErrorTo(message, text) {
 		logError(text)

@@ -1,4 +1,4 @@
-package thhi.vertx.iteramock
+package thhi.vertx.mods
 
 import org.vertx.groovy.platform.Verticle
 

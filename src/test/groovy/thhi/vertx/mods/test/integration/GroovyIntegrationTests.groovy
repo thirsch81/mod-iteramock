@@ -1,4 +1,4 @@
-package thhi.vertx.iteramock.test.integration;
+package thhi.vertx.mods.test.integration;
 /*
  * Copyright 2013 Red Hat, Inc.
  *
@@ -17,6 +17,7 @@ package thhi.vertx.iteramock.test.integration;
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.vertx.testtools.ScriptClassRunner;
@@ -37,4 +38,7 @@ public class GroovyIntegrationTests {
   @Test
   public void __vertxDummy() {
   }
+ 
 }
+
+

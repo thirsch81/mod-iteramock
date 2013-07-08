@@ -1,4 +1,4 @@
-package thhi.vertx.iteramock
+package thhi.vertx.mods
 
 import org.vertx.groovy.core.http.HttpServer
 import org.vertx.groovy.core.http.RouteMatcher
@@ -11,6 +11,17 @@ public class MockServerVerticle extends Verticle {
 		createServer("localhost", 8080)
 	}
 
+	def settings = {
+		vertx.sharedData.getMap("mockserver.settings")
+	}
+
+	def fetchOk(settings) {
+		["status": "ok", "settings": settings]
+	}
+
+	def submitOk() {
+		["status": "ok"]
+	}
 
 	def createServer(hostname, port) {
 		RouteMatcher rm = new RouteMatcher()
@@ -29,13 +40,14 @@ public class MockServerVerticle extends Verticle {
 			logDebug("Received request ${request.method} ${request.uri}")
 			request.bodyHandler { body ->
 				sendToExtractor(body.toString()) { extractReply ->
-					if(!("ok" == extractReply.status)) {
-						request.response.end(extractReply.body)
+					if(!("ok" == extractReply.body.status)) {
+						logError(extractReply.body as String)
+						request.response.end(extractReply.body as String)
 					} else {
 						logDebug("Received ${extractReply.body}")
-						sendToRenderer(extractReply.body.name,extractReply.body.binding) { renderReply ->
-							if(!("ok" == renderReply.status)) {
-								request.response.end(renderReply.body)
+						sendToRenderer(extractReply.body.name, extractReply.body.binding) { renderReply ->
+							if(!("ok" == renderReply.body.status)) {
+								request.response.end(renderReply.body.message)
 							} else {
 								logDebug("Received ${renderReply.body}")
 								request.response.end(renderReply.body[extractReply.body.name])
@@ -58,12 +70,48 @@ public class MockServerVerticle extends Verticle {
 		server.listen(port, hostname)
 	}
 
+	def handleSettings = { message ->
+
+		def body = message.body
+		logDebug("Received ${body}")
+
+		if(!("action" in body)) {
+
+			replyErrorTo(message, "Expected message format: [action: <action>, (settings: <settings>)], not " + body)
+			return
+		}
+
+		switch (body.action) {
+
+			case "submit":
+
+				settings().with { it = body.settings }
+				message.reply(submitOk())
+				logDebug("Accepted setttings from client")
+				break
+			case "fetch":
+
+				message.reply(fetchOk(settings()))
+				logDebug("Sent settings to client")
+				break
+
+				break
+			default:
+				replyErrorTo(message, "Unknown action '" + body.action + "', expected: fetch|submit")
+		}
+	}
+
 	def sendToExtractor(source, replyHandler) {
 		vertx.eventBus.send("extractor.extract", ["source" : source], replyHandler)
 	}
 
 	def sendToRenderer(name, binding, replyHandler) {
 		vertx.eventBus.send("renderer.render", ["name" : name, "binding" : binding], replyHandler)
+	}
+
+	def replyErrorTo(message, text) {
+		logError(text)
+		message.reply(error(text))
 	}
 
 	def logInfo(msg, err = null) {

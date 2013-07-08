@@ -15,7 +15,6 @@ import org.vertx.groovy.testtools.VertxTests;
 // The test methods must being with "test"
 
 def testSomething() {
-	container.logger.info("testSomething()")
 	container.logger.info("vertx is ${vertx.getClass().getName()}")
 	testComplete()
 }
