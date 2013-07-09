@@ -48,6 +48,7 @@ app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 		var response = $q.defer();
 		if (ready()) {
 			eb.send(address, message, function(reply) {
+				$log.log("sending " + JSON.stringify(message) + " to address");
 				$rootScope.$apply(function() {
 					if ("ok" == reply.status) {
 						response.resolve(reply);

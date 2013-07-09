@@ -12,7 +12,10 @@ public class StarterVerticle extends Verticle {
 		container.deployWorkerVerticle("groovy:" + ExtractorVerticle.class.name) { result ->
 			container.logger.info("StarterVerticle: deployed Extractor ${result.result()}")
 		}
-		container.deployVerticle("groovy:" + MockServerVerticle.class.name) { result ->
+
+		def mockServerConfig = container.config.mockserver
+
+		container.deployVerticle("groovy:" + MockServerVerticle.class.name, mockServerConfig) { result ->
 			container.logger.info("StarterVerticle: deployed MockServer ${result.result()}")
 		}
 	}

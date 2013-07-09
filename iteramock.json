@@ -1,0 +1,7 @@
+{
+	"mockserver" : {
+		"hostname" : "localhost",
+		"port" : "8080",
+		"servicePath" : "render"
+	}
+}

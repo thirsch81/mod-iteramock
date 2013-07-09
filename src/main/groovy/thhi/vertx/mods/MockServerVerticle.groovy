@@ -8,7 +8,12 @@ public class MockServerVerticle extends Verticle {
 
 	def start () {
 
-		createServer("localhost", 8080)
+		def hostname = container.config.hostname
+		def port = container.config.port as int
+
+		def servicePath = container.config.servicePath
+
+		createServer(hostname, port, servicePath)
 	}
 
 	def settings = {
@@ -23,7 +28,7 @@ public class MockServerVerticle extends Verticle {
 		["status": "ok"]
 	}
 
-	def createServer(hostname, port) {
+	def createServer(hostname, port, servicePath) {
 		RouteMatcher rm = new RouteMatcher()
 
 		rm.get("/") { request ->
@@ -36,7 +41,7 @@ public class MockServerVerticle extends Verticle {
 			request.response.end("Mock server running")
 		}
 
-		rm.post("/render") { request ->
+		rm.post("/"  + servicePath.removeAll("/")) { request ->
 			logDebug("Received request ${request.method} ${request.uri}")
 			request.bodyHandler { body ->
 				sendToExtractor(body.toString()) { extractReply ->

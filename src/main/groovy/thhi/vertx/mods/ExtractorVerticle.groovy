@@ -2,6 +2,7 @@ package thhi.vertx.mods
 
 import groovy.text.SimpleTemplateEngine
 
+import org.vertx.groovy.core.buffer.Buffer
 import org.vertx.groovy.core.eventbus.EventBus
 import org.vertx.groovy.platform.Verticle
 
@@ -12,7 +13,7 @@ public class ExtractorVerticle extends Verticle {
 		vertx.eventBus.registerHandler("extractor.extract", handleExtract)
 		vertx.eventBus.registerHandler("extractor.dispatchRule", handleDispatchRule)
 		vertx.eventBus.registerHandler("extractor.extractScripts", handleExtractScripts)
-		container.logger.info("ExtractorVerticle started")
+		logInfo("ExtractorVerticle started")
 	}
 
 	def rules = {
@@ -91,6 +92,8 @@ public class ExtractorVerticle extends Verticle {
 				} else {
 
 					rules()[body.name] = body.script
+					//def path = "rules/" + body.name + ".groovy"
+					//writeRuleFile(path, body.script) { logDebug("Wrote extract script " + path) }
 					message.reply(submitOk())
 					logDebug("Accepted extract script " + body.name + " from client")
 				}
@@ -149,7 +152,9 @@ public class ExtractorVerticle extends Verticle {
 		while (matcher.find()) {
 			namespaces.put(matcher.group(1), matcher.group(2))
 		}
-		root.declareNamespace(namespaces)
+		if(namespaces) {
+			root.declareNamespace(namespaces)
+		}
 		def binding = new Binding()
 		binding.setVariable("root", root)
 		binding.setVariable("request", source)
@@ -177,6 +182,10 @@ public class ExtractorVerticle extends Verticle {
 	def replyErrorTo(message, text) {
 		logError(text)
 		message.reply(error(text))
+	}
+
+	def writeRuleFile(path, content, handler) {
+		vertx.fileSystem.writeFile(path, new Buffer(content), handler)
 	}
 
 	def readRuleFiles() {

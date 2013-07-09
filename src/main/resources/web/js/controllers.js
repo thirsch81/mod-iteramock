@@ -135,5 +135,7 @@ function EditScript($scope, $routeParams, eventBus, extractScripts) {
 		$scope.script = reply.script;
 	}
 
-	eventBus.open.then($scope.fetchScript($scope.name));
+	eventBus.open.then(function() {
+		$scope.fetchScript($scope.name);
+	});
 }
