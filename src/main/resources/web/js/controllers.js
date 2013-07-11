@@ -131,11 +131,28 @@ function EditScript($scope, $routeParams, eventBus, extractScripts) {
 		extractScripts.submit(name, script);
 	}
 
-	function updateScript(reply) {
+	function updateScript(script) {
 		$scope.script = reply.script;
 	}
 
 	eventBus.open.then(function() {
 		$scope.fetchScript($scope.name);
 	});
+}
+
+function Test($scope, $location, $http, $log) {
+
+	$scope.request = null;
+	$scope.response = null;
+
+	$scope.submitTest = function(request) {
+		// TODO inject configuration object for different url
+		var url = $location.protocol() + "://" + $location.host() + ":" + $location.port() + "/render";
+		$http.post(url, request).then(updateResponse);
+	}
+
+	function updateResponse(response) {
+		$log.log(response);
+		$scope.response = response.data;
+	}
 }

@@ -16,6 +16,9 @@ app.config(['$routeProvider', function($routeProvider) {
 	}).when("/templates/script/:name", {
 		templateUrl : "edit-script.html",
 		controller : EditScript
+	}).when("/test", {
+		templateUrl : "test.html",
+		controller : Test
 	}).otherwise({
 		redirectTo : "/general"
 	});

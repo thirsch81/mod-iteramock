@@ -41,25 +41,10 @@ public class MockServerVerticle extends Verticle {
 			request.response.end("Mock server running")
 		}
 
-		rm.post("/"  + servicePath.removeAll("/")) { request ->
+		rm.post("/"  + servicePath) { request ->
 			logDebug("Received request ${request.method} ${request.uri}")
 			request.bodyHandler { body ->
-				sendToExtractor(body.toString()) { extractReply ->
-					if(!("ok" == extractReply.body.status)) {
-						logError(extractReply.body as String)
-						request.response.end(extractReply.body as String)
-					} else {
-						logDebug("Received ${extractReply.body}")
-						sendToRenderer(extractReply.body.name, extractReply.body.binding) { renderReply ->
-							if(!("ok" == renderReply.body.status)) {
-								request.response.end(renderReply.body.message)
-							} else {
-								logDebug("Received ${renderReply.body}")
-								request.response.end(renderReply.body[extractReply.body.name])
-							}
-						}
-					}
-				}
+				handleMockRequest(body, request)
 			}
 		}
 
@@ -74,6 +59,26 @@ public class MockServerVerticle extends Verticle {
 		vertx.createSockJSServer(server).bridge(prefix: "/eventbus", [[:]], [[:]])
 		server.listen(port, hostname)
 	}
+
+	def handleMockRequest(body, request) {
+		sendToExtractor(body.toString()) { extractReply ->
+			if(!("ok" == extractReply.body.status)) {
+				logError(extractReply.body as String)
+				request.response.end(extractReply.body as String)
+			} else {
+				logDebug("Received ${extractReply.body}")
+				sendToRenderer(extractReply.body.name, extractReply.body.binding) { renderReply ->
+					if(!("ok" == renderReply.body.status)) {
+						request.response.end(renderReply.body.message)
+					} else {
+						logDebug("Received ${renderReply.body}")
+						request.response.end(renderReply.body[extractReply.body.name])
+					}
+				}
+			}
+		}
+	}
+
 
 	def handleSettings = { message ->
 
