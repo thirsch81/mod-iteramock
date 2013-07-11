@@ -1,0 +1,22 @@
+<div id="test">
+	<div class="row">
+		<div class="well span7">
+			<strong>Test</strong>
+			<div class="v10"></div>
+			Enter a request and submit it.<br />
+			<form name="test">
+				<div class="btn-group pull-right">
+					<button x-ng-click="submitTest(request)" class="btn">
+						<span><i class="icon-upload"></i> Submit</span>
+					</button>
+				</div>
+				<div class="v40"></div>
+				<textarea name="request" x-ng-model="request" class="script-input span7" rows="15"></textarea>
+			</form>
+			<div class="v25"></div>
+			<strong>Response</strong>
+			<div class="v10"></div>
+			<textarea name="response" x-ng-model="response" class="script-input span7" rows="15"></textarea>
+		</div>
+	</div>
+</div>
