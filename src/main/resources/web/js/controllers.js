@@ -131,7 +131,7 @@ function EditScript($scope, $routeParams, eventBus, extractScripts) {
 		extractScripts.submit(name, script);
 	}
 
-	function updateScript(script) {
+	function updateScript(reply) {
 		$scope.script = reply.script;
 	}
 
