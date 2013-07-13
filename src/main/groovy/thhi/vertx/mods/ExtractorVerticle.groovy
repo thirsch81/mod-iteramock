@@ -178,12 +178,6 @@ public class ExtractorVerticle extends Verticle {
 		bindingOk(template, shell.context.variables)
 	}
 
-
-	def replyErrorTo(message, text) {
-		logError(text)
-		message.reply(error(text))
-	}
-
 	def writeRuleFile(path, content, handler) {
 		vertx.fileSystem.writeFile(path, new Buffer(content), handler)
 	}
@@ -218,6 +212,11 @@ public class ExtractorVerticle extends Verticle {
 				logError("Error reading rule ${file}", result.cause)
 			}
 		}
+	}
+
+	def replyErrorTo(message, text) {
+		logError(text)
+		message.reply(error(text))
 	}
 
 	def logInfo(msg, err = null) {

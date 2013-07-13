@@ -1,9 +1,26 @@
 <div id="general">
 	<div class="row">
-		<div class="well span8">
-			<strong>Mock Server settings</strong>
-			<div class="v10"></div>
-			<div></div>
+		<div class="well span3">
+			<strong>Mock server settings</strong>
+			<div class="v25"></div>
+			<form name="settings" class="form-horizontal">
+				<fieldset>
+					<label>Service path</label> <input type="text" x-ng-model="servicePath" x-ng-required="true">
+					<div class="v10"></div>
+					<label>Service port</label> <input type="number" class="input-small" x-ng-required="true" x-ng-model="servicePort"> <input
+						type="submit" x-ng-click="submitSettings(servicePath, servicePort)" x-ng-disabled="!settings.$valid" class="btn pull-right"
+						value="Restart">
+				</fieldset>
+			</form>
+		</div>
+		<div class="well span3">
+			<strong>Other stuff</strong>
+			<div class="v25"></div>
+			<form name="persistence" class="form-horizontal">
+				<fieldset>
+					<!--  >input type="submit" class="btn" value="Save Templates"-->
+				</fieldset>
+			</form>
 		</div>
 	</div>
 </div>

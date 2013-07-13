@@ -8,8 +8,8 @@
 			<div class="v25"></div>
 			<form name="addTemplate">
 				<div class="input-append">
-					<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^\w{3,16}$/" class="input" placeholder="Template name"
-						type="text">
+					<input data-ng-model="templateName" data-ng-required="true" data-ng-pattern="/^[a-zA-Z0-9_-]{3,25}$/" class="input"
+						placeholder="Template name" type="text">
 					<button data-ng-click="add()" data-ng-disabled="!addTemplate.$valid" class="btn add-on">New template</button>
 				</div>
 
@@ -22,11 +22,11 @@
 			<div class="v40"></div>
 			<table x-ng-show="templates.length > 0" class="table table-condensed">
 				<tbody>
-					<tr x-ng-repeat="template in templates">
-						<td class="span3"><a href="#/templates/{{template.name}}">{{template.name}}</a></td>
-						<td class="span2"><a href="#/templates/script/{{template.name}}"><button class="btn btn-mini btn-inverse pull-right">Edit
+					<tr x-ng-repeat="name in templates">
+						<td class="span3"><a href="#/templates/{{name}}">{{name}}</a></td>
+						<td class="span2"><a href="#/templates/script/{{name}}"><button class="btn btn-mini btn-inverse pull-right">Edit
 									script</button></a></td>
-						<td class="span1"><button class="btn btn-mini btn-danger" x-ng-click="deleteTemplate($index)">Delete</button></td>
+						<td class="span1"><button class="btn btn-mini btn-danger" x-ng-click="deleteTemplate(name)">Delete</button></td>
 					</tr>
 				</tbody>
 			</table>

@@ -60,6 +60,7 @@ app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 						response.reject(reply.message);
 						messages.addError(reply.message);
 					}
+					$log.log("got reply " + JSON.stringify(reply));
 				});
 			});
 		} else {
@@ -68,6 +69,11 @@ app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 		}
 		return response.promise;
 	}
+
+	return this;
+});
+
+app.factory("settings", function(eventBus) {
 
 	return this;
 });
@@ -163,6 +169,10 @@ app.factory("messages", function($timeout) {
 
 	this.remove = function(index) {
 		messages.splice(index, 1);
+	}
+
+	this.removeAll = function(index) {
+		messages = [];
 	}
 
 	var timedRemove = function(messages, timeout) {

@@ -9,11 +9,14 @@ public class MockServerVerticle extends Verticle {
 	def start () {
 
 		def hostname = container.config.hostname
-		def port = container.config.port as int
-
+		def webPort = container.config.webPort as int
 		def servicePath = container.config.servicePath
+		def servicePort = container.config.servicePort as int
 
-		createServer(hostname, port, servicePath)
+		vertx.eventBus.registerHandler("mockserver.settings", handleSettings)
+
+		createFrontendServer(hostname, webPort)
+		createMockServer(hostname, servicePort, servicePath)
 	}
 
 	def settings = {
@@ -28,24 +31,12 @@ public class MockServerVerticle extends Verticle {
 		["status": "ok"]
 	}
 
-	def createServer(hostname, port, servicePath) {
+	def createFrontendServer(hostname, port) {
 		RouteMatcher rm = new RouteMatcher()
 
 		rm.get("/") { request ->
 			logDebug("Received request ${request.method} ${request.uri}")
 			request.response.sendFile("web/index.html")
-		}
-
-		rm.get("/test") { request ->
-			logDebug("Received request ${request.method} ${request.uri}")
-			request.response.end("Mock server running")
-		}
-
-		rm.post("/"  + servicePath) { request ->
-			logDebug("Received request ${request.method} ${request.uri}")
-			request.bodyHandler { body ->
-				handleMockRequest(body, request)
-			}
 		}
 
 		rm.getWithRegEx(".*") { request ->
@@ -57,6 +48,26 @@ public class MockServerVerticle extends Verticle {
 		server.requestHandler(rm.asClosure())
 		// TODO Security hole
 		vertx.createSockJSServer(server).bridge(prefix: "/eventbus", [[:]], [[:]])
+		server.listen(port, hostname)
+	}
+
+	def createMockServer(hostname, port, path) {
+		RouteMatcher rm = new RouteMatcher()
+
+		rm.get("/test") { request ->
+			logDebug("Received request ${request.method} ${request.uri}")
+			request.response.end("Mock server running")
+		}
+
+		rm.post("/"  + path) { request ->
+			logDebug("Received request ${request.method} ${request.uri}")
+			request.bodyHandler { body ->
+				handleMockRequest(body, request)
+			}
+		}
+
+		HttpServer server = vertx.createHttpServer()
+		server.requestHandler(rm.asClosure())
 		server.listen(port, hostname)
 	}
 

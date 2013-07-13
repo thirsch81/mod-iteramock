@@ -12,8 +12,8 @@ function Main($scope, $location, $log, eventBus, messages) {
 		$scope.statusClass = "text-error";
 	});
 
-	$scope.isActive = function(route) {
-		var regex = RegExp(route);
+	$scope.isActive = function(entry) {
+		var regex = RegExp(entry);
 		return regex.test($location.path());
 	}
 
@@ -52,41 +52,36 @@ function TemplateList($scope, $log, $location, eventBus, templates) {
 	$scope.templateName = null;
 	$scope.templates = [];
 
+	$scope.add = function() {
+		var name = $scope.templateName
+		if (isDuplicate(name)) {
+			$log.warn("duplicate template name");
+		} else {
+			templates.submit(name, "").then(function() {
+				$location.path("/templates/" + name);
+			});
+			$scope.templateName = null;
+		}
+	}
+
+	$scope.deleteTemplate = function(name) {
+		var index = $scope.templates.indexOf(name);
+		$scope.templates.splice(index, 1);
+	}
+
 	$scope.fetchTemplates = function() {
 		templates.fetchAll().then(updateTemplates);
 	}
 
-	$scope.add = function() {
-		var template = {
-			name : $scope.templateName,
-			template : ""
-		}
-		if (isDuplicate(template.name)) {
-			$log.warn("duplicate template name");
-		} else {
-			$scope.templateName = null;
-			templates.submit(template.name, template.template).then(function() {
-				$location.path("/templates/" + template.name);
-			});
-		}
-	}
-
-	$scope.deleteTemplate = function(index) {
-		$scope.templates.splice(index, 1);
-	}
-
 	function updateTemplates(reply) {
 		$scope.templates = [];
-		angular.forEach(reply.templates, function(template, index) {
-			$scope.templates.push({
-				name : template.name,
-				template : template.template
-			});
+		angular.forEach(reply.templates.sort(), function(template) {
+			$scope.templates.push(template);
 		});
 	}
 
 	function isDuplicate(name) {
-		return _.contains(_.pluck($scope.templates, "name"), name);
+		return arr.indexOf(name) != -1;
 	}
 
 	eventBus.open.then($scope.fetchTemplates);
