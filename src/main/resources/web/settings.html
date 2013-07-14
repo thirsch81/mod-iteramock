@@ -1,15 +1,14 @@
-<div id="general">
+<div id="settings">
 	<div class="row">
 		<div class="well span3">
 			<strong>Mock server settings</strong>
 			<div class="v25"></div>
-			<form name="settings" class="form-horizontal">
+			<form name="settingsForm" class="form-horizontal">
 				<fieldset>
-					<label>Service path</label> <input type="text" x-ng-model="servicePath" x-ng-required="true">
+					<label>Service path</label> <input type="text" x-ng-model="settings.servicePath" x-ng-required="true">
 					<div class="v10"></div>
-					<label>Service port</label> <input type="number" class="input-small" x-ng-required="true" x-ng-model="servicePort"> <input
-						type="submit" x-ng-click="submitSettings(servicePath, servicePort)" x-ng-disabled="!settings.$valid" class="btn pull-right"
-						value="Restart">
+					<label>Service port</label> <input type="number" class="input-small" x-ng-required="true" x-ng-model="settings.servicePort"> <input
+						type="submit" x-ng-click="submit(settings)" x-ng-disabled="!settingsForm.$valid" class="btn pull-right" value="Restart">
 				</fieldset>
 			</form>
 		</div>

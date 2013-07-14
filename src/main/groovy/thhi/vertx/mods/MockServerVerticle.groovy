@@ -6,6 +6,8 @@ import org.vertx.groovy.platform.Verticle
 
 public class MockServerVerticle extends Verticle {
 
+	static HttpServer mockServer = null;
+
 	def start () {
 
 		def hostname = container.config.hostname
@@ -13,14 +15,21 @@ public class MockServerVerticle extends Verticle {
 		def servicePath = container.config.servicePath
 		def servicePort = container.config.servicePort as int
 
-		vertx.eventBus.registerHandler("mockserver.settings", handleSettings)
-
 		createFrontendServer(hostname, webPort)
 		createMockServer(hostname, servicePort, servicePath)
+
+		putSettings(servicePort, servicePath)
+
+		vertx.eventBus.registerHandler("mockserver.settings", handleSettings)
 	}
 
 	def settings = {
-		vertx.sharedData.getMap("mockserver.settings")
+		vertx.sharedData.getMap("mockserverSettings")
+	}
+
+	def putSettings(port, path) {
+		settings().put("servicePort", port)
+		settings().put("servicePath", path)
 	}
 
 	def fetchOk(settings) {
@@ -52,6 +61,9 @@ public class MockServerVerticle extends Verticle {
 	}
 
 	def createMockServer(hostname, port, path) {
+		if(mockServer) {
+			mockServer.close()
+		}
 		RouteMatcher rm = new RouteMatcher()
 
 		rm.get("/test") { request ->
@@ -66,9 +78,12 @@ public class MockServerVerticle extends Verticle {
 			}
 		}
 
-		HttpServer server = vertx.createHttpServer()
-		server.requestHandler(rm.asClosure())
-		server.listen(port, hostname)
+		mockServer = vertx.createHttpServer()
+		mockServer.requestHandler(rm.asClosure())
+		mockServer.listen(port, hostname)
+
+		putSettings(port, path)
+		logDebug("Created mock service at :" + port + "/" + path)
 	}
 
 	def handleMockRequest(body, request) {
@@ -106,10 +121,22 @@ public class MockServerVerticle extends Verticle {
 
 			case "submit":
 
-				settings().with { it = body.settings }
-				message.reply(submitOk())
-				logDebug("Accepted setttings from client")
+				if(!("settings" in body)) {
+					replyErrorTo(message, "Expected message format: [action: 'submit', settings: <settings>], not " + body)
+					break
+				}
+				try {
+					def port = body.settings.servicePort
+					def path = body.settings.servicePath
+					putSettings(port, path)
+					createMockServer(container.config.hostname, port, path)
+					message.reply(submitOk())
+					logDebug("Accepted setttings from client")
+				} catch(Exception e) {
+					replyErrorTo(message, "Error when accepting settings: " + e.message)
+				}
 				break
+
 			case "fetch":
 
 				message.reply(fetchOk(settings()))

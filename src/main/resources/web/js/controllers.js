@@ -1,4 +1,4 @@
-function Main($scope, $location, $log, eventBus, messages) {
+function Main($scope, $location, $log, messages, eventBus) {
 
 	$scope.status = "waiting";
 	$scope.statusClass = "text-warning";
@@ -24,11 +24,26 @@ function Main($scope, $location, $log, eventBus, messages) {
 	}
 }
 
-function General($scope, eventBus) {
+function Settings($scope, settings, eventBus) {
 
+	$scope.settings = {};
+
+	$scope.submit = function(map) {
+		settings.submit(map);
+	}
+
+	$scope.fetch = function() {
+		settings.fetch().then(updateSettings);
+	}
+
+	function updateSettings(reply) {
+		$scope.settings = reply.settings;
+	}
+
+	eventBus.open.then($scope.fetch);
 }
 
-function Dispatch($scope, eventBus, dispatchRule) {
+function Dispatch($scope, dispatchRule, eventBus) {
 
 	$scope.script = null;
 
@@ -47,7 +62,7 @@ function Dispatch($scope, eventBus, dispatchRule) {
 	eventBus.open.then($scope.fetch);
 }
 
-function TemplateList($scope, $log, $location, eventBus, templates) {
+function TemplateList($scope, $log, $location, templates, eventBus) {
 
 	$scope.templateName = null;
 	$scope.templates = [];
@@ -87,7 +102,7 @@ function TemplateList($scope, $log, $location, eventBus, templates) {
 	eventBus.open.then($scope.fetchTemplates);
 }
 
-function EditTemplate($scope, $routeParams, eventBus, templates) {
+function EditTemplate($scope, $routeParams, templates, eventBus) {
 
 	$scope.name = $routeParams.name;
 	$scope.template = null;
@@ -113,7 +128,7 @@ function EditTemplate($scope, $routeParams, eventBus, templates) {
 	});
 }
 
-function EditScript($scope, $routeParams, eventBus, extractScripts) {
+function EditScript($scope, $routeParams, extractScripts, eventBus) {
 
 	$scope.name = $routeParams.name;
 	$scope.script = null;

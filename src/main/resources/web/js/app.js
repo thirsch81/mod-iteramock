@@ -1,9 +1,9 @@
 var app = angular.module("iteraMock", []);
 
 app.config(['$routeProvider', function($routeProvider) {
-	$routeProvider.when("/general", {
-		templateUrl : "general.html",
-		controller : General
+	$routeProvider.when("/settings", {
+		templateUrl : "settings.html",
+		controller : Settings
 	}).when("/dispatch", {
 		templateUrl : "dispatch.html",
 		controller : Dispatch
@@ -20,7 +20,7 @@ app.config(['$routeProvider', function($routeProvider) {
 		templateUrl : "test.html",
 		controller : Test
 	}).otherwise({
-		redirectTo : "/general"
+		redirectTo : "/settings"
 	});
 }]);
 
@@ -51,8 +51,9 @@ app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 		var response = $q.defer();
 		if (ready()) {
 			eb.send(address, message, function(reply) {
-				$log.log("sending " + JSON.stringify(message) + " to address");
+				$log.log("sending " + JSON.stringify(message) + " to address " + address);
 				$rootScope.$apply(function() {
+					$log.log("got reply " + JSON.stringify(reply));
 					if ("ok" == reply.status) {
 						response.resolve(reply);
 						messages.addSuccess();
@@ -60,7 +61,6 @@ app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 						response.reject(reply.message);
 						messages.addError(reply.message);
 					}
-					$log.log("got reply " + JSON.stringify(reply));
 				});
 			});
 		} else {
@@ -74,6 +74,20 @@ app.factory("eventBus", function($rootScope, $location, $q, $log, messages) {
 });
 
 app.factory("settings", function(eventBus) {
+
+	this.fetch = function(name) {
+		return eventBus.send("mockserver.settings", {
+			action : "fetch"
+		});
+	}
+
+	this.submit = function(settings) {
+		console.log(settings);
+		return eventBus.send("mockserver.settings", {
+			action : "submit",
+			settings : settings
+		});
+	}
 
 	return this;
 });
