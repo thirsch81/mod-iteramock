@@ -83,7 +83,7 @@ public class MockServerVerticle extends Verticle {
 				// TODO refine response header
 				request.response.with {
 					putHeader("Access-Control-Allow-Origin", "*")
-					putHeader("Access-Control-Allow-Headers", "Content-Type")
+					putHeader("Access-Control-Allow-Headers", request.headers["Access-Control-Request-Headers"])
 					putHeader("Access-Control-Allow-Methods", "POST")
 					end()
 				}
