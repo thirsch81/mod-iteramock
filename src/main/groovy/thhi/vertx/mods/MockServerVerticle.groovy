@@ -73,6 +73,7 @@ public class MockServerVerticle extends Verticle {
 
 		rm.post("/"  + path) { request ->
 			logDebug("Received request ${request.method} ${request.uri}")
+			request.response.putHeader("Access-Control-Allow-Origin", "*")
 			request.bodyHandler { body ->
 				handleMockRequest(body, request)
 			}
