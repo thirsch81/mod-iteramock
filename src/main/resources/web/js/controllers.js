@@ -150,19 +150,30 @@ function EditScript($scope, $routeParams, extractScripts, eventBus) {
 	});
 }
 
-function Test($scope, $location, $http, $log) {
+function Test($scope, $location, $http, $log, settings, eventBus) {
 
+	$http.defaults.useXDomain = true;
+	$http.defaults.headers.post["Content-Type"] = "application/xml";
 	$scope.request = null;
 	$scope.response = null;
 
+	var port = null;
+	var path = null;
+
 	$scope.submitTest = function(request) {
-		// TODO inject configuration object for different url
-		var url = $location.protocol() + "://" + $location.host() + ":" + $location.port() + "/render";
+		var url = $location.protocol() + "://" + $location.host() + ":" + port + "/" + path;
 		$http.post(url, request).then(updateResponse);
 	}
 
 	function updateResponse(response) {
-		$log.log(response);
 		$scope.response = response.data;
 	}
+
+	eventBus.open.then(function() {
+		settings.fetch().then(function(reply) {
+			port = reply.settings.servicePort
+			path = reply.settings.servicePath
+		});
+	});
+
 }

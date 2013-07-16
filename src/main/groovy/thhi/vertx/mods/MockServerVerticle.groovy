@@ -77,6 +77,18 @@ public class MockServerVerticle extends Verticle {
 				handleMockRequest(body, request)
 			}
 		}
+		rm.options("/" + path) { request ->
+			logDebug("Received request ${request.method} ${request.uri}")
+			request.bodyHandler {body ->
+				// TODO refine response header
+				request.response.with {
+					putHeader("Access-Control-Allow-Origin", "*")
+					putHeader("Access-Control-Allow-Headers", "Content-Type")
+					putHeader("Access-Control-Allow-Methods", "POST")
+					end()
+				}
+			}
+		}
 
 		mockServer = vertx.createHttpServer()
 		mockServer.requestHandler(rm.asClosure())

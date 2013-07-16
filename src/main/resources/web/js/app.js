@@ -1,6 +1,6 @@
 var app = angular.module("iteraMock", []);
 
-app.config(['$routeProvider', function($routeProvider) {
+app.config(["$routeProvider", function($routeProvider) {
 	$routeProvider.when("/settings", {
 		templateUrl : "settings.html",
 		controller : Settings
